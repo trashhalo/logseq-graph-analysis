@@ -20,18 +20,18 @@
   const handleKeydown = (event: KeyboardEvent) => {
     if (event.key == "Escape") {
       logseq.hideMainUI();
-    } else if (event.metaKey) {
+    } else if (event.key === "Meta") {
       metaDown = true;
     }
   };
   const handleKeyup = (event: KeyboardEvent) => {
-    if (event.metaKey) {
+    if (event.key === "Meta") {
       metaDown = false;
     }
   };
 
   const handleNodeClick = async (event: CustomEvent<string>) => {
-    console.log("nodeclicked", event);
+    console.log("nodeclicked", event, metaDown);
     if ($settings.mode === Mode.Navigate || metaDown) {
       const page = await logseq.Editor.getPage(+event.detail);
       if (page) {
