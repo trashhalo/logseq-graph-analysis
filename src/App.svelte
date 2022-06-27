@@ -18,6 +18,7 @@
   let metaDown = false;
 
   const handleKeydown = (event: KeyboardEvent) => {
+    console.log("down", event);
     if (event.key == "Escape") {
       logseq.hideMainUI();
     } else if (event.key === "Meta") {
@@ -25,6 +26,7 @@
     }
   };
   const handleKeyup = (event: KeyboardEvent) => {
+    console.log("up", event);
     if (event.key === "Meta") {
       metaDown = false;
     }

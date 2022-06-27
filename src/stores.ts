@@ -24,7 +24,31 @@ interface Store {
   graph?: Promise<Graph>;
 }
 
-type Block = { refs: { id: number }[]; page: { id: number } };
+interface Block {
+  refs: { id: number }[];
+  "path-refs": { id: number }[];
+  page: { id: number };
+}
+
+interface Reference {
+  source: number;
+  target: number;
+}
+
+function blockToReferences(block: Block): Reference[] {
+  const targets = block.refs;
+  const pathsWithoutTargets = block["path-refs"].filter(
+    (p) => !targets.map((p) => p.id).includes(p.id) && p.id !== block.page.id
+  );
+  let source = block.page;
+  if (pathsWithoutTargets.length > 0) {
+    source = pathsWithoutTargets[pathsWithoutTargets.length - 1];
+  }
+  return targets.map((target) => ({
+    source: source.id,
+    target: target.id,
+  }));
+}
 
 async function buildGraph(): Promise<Graph> {
   const g = new Graph();
@@ -56,14 +80,14 @@ async function buildGraph(): Promise<Graph> {
 
   for (const block of results.flat()) {
     if (block.refs) {
-      for (const ref of block.refs) {
-        if (g.hasNode(block.page.id) && g.hasNode(ref.id)) {
-          if (!g.hasEdge(block.page.id, ref.id)) {
-            g.addEdge(block.page.id, ref.id, { weight: 1 });
+      for (const ref of blockToReferences(block)) {
+        if (g.hasNode(ref.source) && g.hasNode(ref.target)) {
+          if (!g.hasEdge(ref.source, ref.target)) {
+            g.addEdge(ref.source, ref.target, { weight: 1 });
           } else {
             g.updateDirectedEdgeAttribute(
-              block.page.id,
-              ref.id,
+              ref.source,
+              ref.target,
               "weight",
               (weight) => weight + 1
             );
