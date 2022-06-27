@@ -37,6 +37,7 @@
     if ($settings.mode === Mode.Navigate || metaDown) {
       const page = await logseq.Editor.getPage(+event.detail);
       if (page) {
+        metaDown = false;
         logseq.App.pushState("page", {
           name: page.name,
         });
