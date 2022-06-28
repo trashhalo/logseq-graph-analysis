@@ -36,6 +36,6 @@
   },
   "logseq": {
     "id": "_trashhalo-logseq-graph-analysis",
-    "icon": "./icon.png"
+    "icon": "./dist/icon.png"
   }
 }
