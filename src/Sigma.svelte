@@ -69,12 +69,20 @@
     dispatch("nodeclick", node);
   };
 
+  const maxSize = (size: number, max: number) => {
+    if (size > max) {
+      return max;
+    } else {
+      return size;
+    }
+  };
+
   const nodeReducer = (node: string, data: Attributes) => {
     const res: Partial<NodeDisplayData> = { ...data };
     if ($settings.size === "in") {
-      res.size = Math.max(1, graph.neighbors(node).length / 2);
+      res.size = maxSize(Math.max(1, graph.neighbors(node).length / 2), 16);
     } else if ($settings.size === "out") {
-      res.size = graph.inDegree(node);
+      res.size = maxSize(graph.inDegree(node), 16);
     }
 
     if ($settings.search && res.label && res.label.includes($settings.search)) {
@@ -112,7 +120,7 @@
         res.color = orange;
       } else if (adamicAdarResults[node]) {
         res.color = red;
-        res.size = 5 * adamicAdarResults[node].measure;
+        res.size = maxSize(5 * adamicAdarResults[node].measure, 16);
         res.label = `${adamicAdarResults[node].measure} ${data.label}`;
       } else {
         res.zIndex = -1;
