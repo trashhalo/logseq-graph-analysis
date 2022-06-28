@@ -26,7 +26,7 @@ interface Store {
 
 interface Block {
   refs: { id: number }[];
-  "path-refs": { id: number }[];
+  "path-refs": { id: number }[] | undefined;
   page: { id: number };
 }
 
@@ -37,9 +37,10 @@ interface Reference {
 
 function blockToReferences(block: Block): Reference[] {
   const targets = block.refs;
-  const pathsWithoutTargets = block["path-refs"].filter(
-    (p) => !targets.map((p) => p.id).includes(p.id) && p.id !== block.page.id
-  );
+  const pathsWithoutTargets =
+    block["path-refs"]?.filter(
+      (p) => !targets.map((p) => p.id).includes(p.id) && p.id !== block.page.id
+    ) ?? [];
   let source = block.page;
   if (pathsWithoutTargets.length > 0) {
     source = pathsWithoutTargets[pathsWithoutTargets.length - 1];
