@@ -67,12 +67,24 @@
     store.reload();
     cacheHit = true;
   }
+
+  function handleCloseClick() {
+    logseq.hideMainUI();
+  }
 </script>
 
 <svelte:window on:keydown={handleKeydown} on:keyup={handleKeyup} />
 
 <main>
   {#if $uiVisible && $graph}
+    <div class="flex flex-row justify-end pr-2">
+      <button
+        class="h-8 w-8 p-1 opacity-50 flex justify-center items-center bg-white border-0 hover:opacity-100 hover:bg-slate-100 rounded"
+        on:click={handleCloseClick}
+      >
+        <div class="i-mdi-close text-slate-600" />
+      </button>
+    </div>
     {#await $graph then graph}
       <Sigma on:nodeclick={handleNodeClick} {graph} />
       <Settings />

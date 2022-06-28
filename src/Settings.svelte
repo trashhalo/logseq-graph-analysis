@@ -76,7 +76,7 @@
 <style>
   .settings {
     position: fixed;
-    top: 8px;
+    top: 40px;
     right: 1vh;
     display: flex;
     flex-direction: column;

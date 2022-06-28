@@ -1,5 +1,8 @@
 import "@logseq/libs";
+import "uno.css";
+import "@unocss/reset/normalize.css";
 import App from "./App.svelte";
+import type * as CSS from "csstype";
 
 function createModel() {
   return {
@@ -16,13 +19,17 @@ async function main() {
     target: document.getElementById("app"),
   });
 
-  logseq.setMainUIInlineStyle({
+  const baseStyles: CSS.Properties = {
     position: "fixed",
     zIndex: 12,
-  });
+    height: "calc(100vh - 8px)",
+    top: "8px",
+  };
+
+  logseq.setMainUIInlineStyle(baseStyles);
 
   logseq.App.registerUIItem("toolbar", {
-    key: "logseq-sticky-notes",
+    key: "logseq-graph-analysis",
     template: `
       <a class="button" data-on-click="openGraph" title="Open graph analysis">
         <svg style="width:24px;height:24px" viewBox="0 0 24 24">
