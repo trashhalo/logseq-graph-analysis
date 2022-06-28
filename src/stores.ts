@@ -17,6 +17,7 @@ interface Settings {
   pathB?: string;
   gravity: number;
   mode: Mode;
+  directed: boolean;
 }
 
 interface Store {
@@ -133,4 +134,5 @@ export const settings: Writable<Settings> = writable({
   size: "in",
   gravity: 0.05,
   mode: Mode.Navigate,
+  directed: true,
 });

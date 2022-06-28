@@ -57,6 +57,10 @@
       <input type="submit" value="random" on:click={handleShortestPathRandom} />
     </div>
     <div>
+      <label for="directed">directed?</label>
+      <input type="checkbox" bind:checked={$settings.directed} />
+    </div>
+    <div>
       <label for="path">path a</label>
       <input type="text" bind:value={$settings.pathA} />
     </div>
