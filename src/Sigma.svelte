@@ -11,6 +11,7 @@
   import type Graph from "graphology";
   import type { SigmaNodeEventPayload } from "sigma/sigma";
   import type { Attributes } from "graphology-types";
+  import toUndirected from "graphology-operators/to-undirected";
   import type { EdgeDisplayData, NodeDisplayData } from "sigma/types";
   import { Mode, settings } from "./stores";
   import { dijkstra, edgePathFromNodePath } from "graphology-shortest-path";
@@ -149,14 +150,39 @@
         (_, attrs) => attrs.label === $settings.pathB
       );
       if (pathA && pathB) {
-        shortestNodePath =
-          dijkstra.bidirectional(graph, pathA, pathB) ||
-          dijkstra.bidirectional(graph, pathB, pathA);
-        if (shortestNodePath) {
-          shortestEdgePath = edgePathFromNodePath(graph, shortestNodePath);
+        if ($settings.directed) {
+          shortestNodePath =
+            dijkstra.bidirectional(graph, pathA, pathB) ||
+            dijkstra.bidirectional(graph, pathB, pathA);
+          if (shortestNodePath) {
+            shortestEdgePath = edgePathFromNodePath(graph, shortestNodePath);
+          } else {
+            shortestNodePath = undefined;
+            shortestEdgePath = undefined;
+          }
         } else {
-          shortestNodePath = undefined;
-          shortestEdgePath = undefined;
+          const undirected = toUndirected(graph);
+
+          shortestNodePath = dijkstra.bidirectional(undirected, pathA, pathB);
+          if (shortestNodePath) {
+            shortestEdgePath = [] as string[];
+            for (let i = 0; i < shortestNodePath.length - 1; i++) {
+              const edges = graph
+                .directedEdges(shortestNodePath[i], shortestNodePath[i + 1])
+                .concat(
+                  graph.directedEdges(
+                    shortestNodePath[i],
+                    shortestNodePath[i + 1]
+                  )
+                );
+              if (edges.length) {
+                shortestEdgePath.push(edges[0]);
+              }
+            }
+          } else {
+            shortestNodePath = undefined;
+            shortestEdgePath = undefined;
+          }
         }
       } else {
         shortestNodePath = undefined;
