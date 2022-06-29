@@ -52,6 +52,19 @@ function blockToReferences(block: Block): Reference[] {
   }));
 }
 
+async function refToPageRef(
+  pages: { id: number }[],
+  ref: number
+): Promise<number | undefined> {
+  if (pages.find((p) => p.id === ref)) {
+    return ref;
+  }
+  const block = await logseq.Editor.getBlock(ref);
+  if (block && block.page) {
+    return block.page.id;
+  }
+}
+
 async function buildGraph(): Promise<Graph> {
   const g = new Graph();
   const pages: {
@@ -83,13 +96,14 @@ async function buildGraph(): Promise<Graph> {
   for (const block of results.flat()) {
     if (block.refs) {
       for (const ref of blockToReferences(block)) {
-        if (g.hasNode(ref.source) && g.hasNode(ref.target)) {
-          if (!g.hasEdge(ref.source, ref.target)) {
-            g.addEdge(ref.source, ref.target, { weight: 1 });
+        const targetRef = await refToPageRef(pages, ref.target);
+        if (targetRef && g.hasNode(ref.source) && g.hasNode(targetRef)) {
+          if (!g.hasEdge(ref.source, targetRef)) {
+            g.addEdge(ref.source, targetRef, { weight: 1 });
           } else {
             g.updateDirectedEdgeAttribute(
               ref.source,
-              ref.target,
+              targetRef,
               "weight",
               (weight) => weight + 1
             );
