@@ -81,7 +81,7 @@
   const nodeReducer = (node: string, data: Attributes) => {
     const res: Partial<NodeDisplayData> = { ...data };
     if ($settings.size === "in") {
-      res.size = maxSize(Math.max(1, graph.neighbors(node).length / 2), 16);
+      res.size = maxSize(Math.max(2, graph.neighbors(node).length / 2), 16);
     } else if ($settings.size === "out") {
       res.size = maxSize(graph.inDegree(node), 16);
     }
