@@ -1,7 +1,6 @@
 import { derived, get, Writable, writable } from "svelte/store";
 import Graph from "graphology";
 import random from "graphology-layout/random";
-import type { PageEntity } from "@logseq/libs/dist/LSPlugin.user";
 
 type SettingsSize = "in" | "out";
 export enum Mode {
@@ -36,15 +35,33 @@ interface Reference {
   target: number;
 }
 
-function blockToReferences(block: Block): Reference[] {
+function blockToReferences(
+  journalsEnabled: boolean,
+  journals: Page[],
+  block: Block
+): Reference[] {
   const targets = block.refs;
-  const pathsWithoutTargets =
-    block["path-refs"]?.filter(
-      (p) => !targets.map((p) => p.id).includes(p.id) && p.id !== block.page.id
-    ) ?? [];
+  const targetIds = targets.map((p) => p.id);
+  let pathsWithoutTargets = [] as { id: number }[];
+  for (const ref of block["path-refs"] ?? []) {
+    const targetIsJournal = !!journals.find((j) => j.id === ref.id);
+    if (!journalsEnabled && targetIsJournal) {
+      continue;
+    }
+    if (ref.id === block.page.id) {
+      continue;
+    }
+    if (targetIds.includes(ref.id)) {
+      continue;
+    }
+    pathsWithoutTargets.push(ref);
+  }
+
   let source = block.page;
   if (pathsWithoutTargets.length > 0) {
     source = pathsWithoutTargets[pathsWithoutTargets.length - 1];
+  } else {
+    source = block.page;
   }
   return targets.map((target) => ({
     source: source.id,
@@ -64,15 +81,19 @@ async function refToPageRef(
     return block.page.id;
   }
 }
+interface Page {
+  id: number;
+  "journal?": boolean;
+  name: string;
+  properties?: { graphHide?: boolean };
+}
 
 async function buildGraph(): Promise<Graph> {
   const g = new Graph();
-  const pages: {
-    id: number;
-    "journal?": boolean;
-    name: string;
-    properties?: { graphHide?: boolean };
-  }[] = await logseq.Editor.getAllPages();
+  const pages: Page[] = await logseq.Editor.getAllPages();
+
+  const journals = pages.filter((p) => p["journal?"]);
+
   for (const page of pages) {
     if (page.properties && page.properties.graphHide) {
       continue;
@@ -96,7 +117,11 @@ async function buildGraph(): Promise<Graph> {
 
   for (const block of results.flat()) {
     if (block.refs) {
-      for (const ref of blockToReferences(block)) {
+      for (const ref of blockToReferences(
+        logseq.settings?.journal === true,
+        journals,
+        block
+      )) {
         const targetRef = await refToPageRef(pages, ref.target);
         if (targetRef && g.hasNode(ref.source) && g.hasNode(targetRef)) {
           if (!g.hasEdge(ref.source, targetRef)) {
