@@ -3,6 +3,17 @@ import "uno.css";
 import "@unocss/reset/normalize.css";
 import App from "./App.svelte";
 import type * as CSS from "csstype";
+import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.user";
+
+const settingsSchema: SettingSchemaDesc[] = [
+  {
+    key: "journal",
+    type: "boolean",
+    title: "Show journal pages on graph",
+    description: "Do you want to show journal pages on your graph?",
+    default: false,
+  },
+];
 
 function createModel() {
   return {
@@ -39,4 +50,5 @@ async function main() {
   });
 }
 
+logseq.useSettingsSchema(settingsSchema);
 logseq.ready(createModel(), main).catch(() => console.error);
