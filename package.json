@@ -1,6 +1,6 @@
 {
   "name": "logseq-graph-analysis",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "type": "module",
   "main": "./dist/index.html",
   "license": "GPL",
