@@ -86,7 +86,11 @@
       res.size = maxSize(graph.inDegree(node), 16);
     }
 
-    if ($settings.search && res.label && res.label.includes($settings.search)) {
+    if (
+      $settings.search &&
+      res.label &&
+      res.label.toUpperCase().includes($settings.search.toUpperCase())
+    ) {
       res.color = orange;
     }
 
