@@ -5,12 +5,16 @@
   import { uiVisible, store, graph, settings, Mode } from "./stores";
 
   let cacheHit = false;
+
   onMount(async () => {
     // @ts-ignore
     logseq.on("ui:visible:changed", async ({ visible }) => {
       store.visible(visible);
     });
     logseq.DB.onChanged(() => {
+      cacheHit = false;
+    });
+    logseq.onSettingsChanged(() => {
       cacheHit = false;
     });
   });

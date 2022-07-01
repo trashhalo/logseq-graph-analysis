@@ -20,6 +20,10 @@ Learn more about the relationships between between your notes using network anal
 - If there are nodes you wish to hide from your graph add the page property `graph-hide:: true`
   - If you are interested in seeing suprising paths in your notes its a good idea to add this to notes that have lots of connections.
 
+## Settings
+
+- journal: show journal pages on your graph. may be slower. default false
+
 ## Development
 
 1. yarn

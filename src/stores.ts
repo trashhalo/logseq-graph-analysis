@@ -80,7 +80,8 @@ async function buildGraph(): Promise<Graph> {
     if (g.hasNode(page.id)) {
       continue;
     }
-    if (page["journal?"]) {
+
+    if (logseq.settings?.journal !== true && page["journal?"]) {
       continue;
     }
 
