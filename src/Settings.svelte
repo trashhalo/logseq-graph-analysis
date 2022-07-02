@@ -76,7 +76,7 @@
     </div>
     <div>
       <label for="bubbleSize">bubble size</label>
-      <input type="range" min="0.01" max="10" bind:value={$settings.bubbleSize} />
+      <input type="range" min="0.01" step="0.1" max="10" bind:value={$settings.bubbleSize} />
     </div>
   {/if}
 </div>
