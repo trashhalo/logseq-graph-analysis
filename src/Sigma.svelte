@@ -12,10 +12,10 @@
   import type { SigmaNodeEventPayload } from "sigma/sigma";
   import type { Attributes } from "graphology-types";
   import toUndirected from "graphology-operators/to-undirected";
-  import type { EdgeDisplayData, NodeDisplayData } from "sigma/types";
+  import type { Coordinates, EdgeDisplayData, NodeDisplayData } from "sigma/types";
   import { Mode, settings } from "./stores";
   import { dijkstra, edgePathFromNodePath } from "graphology-shortest-path";
-  import { adamicAdar, ResultMap } from "./analysis";
+  import { adamicAdar, coCitation, ResultMap } from "./analysis";
 
   export let graph: Graph;
 
@@ -137,9 +137,26 @@
           32
         );
         res.label = `${adamicAdarResults[node].measure} ${data.label}`;
+      }
+    }
+    if ($settings.mode === Mode.CoCitation && coCitationResults) {
+      const pathA = graph.findNode(
+        (_, attrs) => attrs.label === $settings.pathA
+      );
+      if (pathA && node === pathA) {
+        res.size = 10;
+        res.zIndex = 2;
+        res.color = orange;
+        res.highlighted = true;
+        res.size = $settings.bubbleSize * coCitationResults[node].measure;
+        res.label = `${coCitationResults[node].measure} ${data.label}`;
       } else {
-        res.zIndex = -1;
-        res.size = 1;
+        res.color = red;
+        res.size = maxSize(
+          $settings.bubbleSize * adamicAdarResults[node].measure,
+          32
+        );
+        res.label = `${adamicAdarResults[node].measure} ${data.label}`;
       }
     }
 
@@ -149,6 +166,7 @@
   let shortestNodePath: Array<string> | undefined | null;
   let shortestEdgePath: Array<string> | undefined | null;
   let adamicAdarResults: ResultMap | undefined;
+  let coCitationResults: any;
   $: {
     if (
       sigma &&
@@ -206,7 +224,6 @@
       shortestNodePath = undefined;
       shortestEdgePath = undefined;
     }
-
     if (sigma && $settings.mode === Mode.AdamicAdar && $settings.pathA) {
       const pathA = graph.findNode(
         (_, attrs) => attrs.label === $settings.pathA
@@ -219,6 +236,19 @@
       }
     } else {
       adamicAdarResults = undefined;
+    }
+    if (sigma && $settings.mode === Mode.CoCitation && $settings.pathA) {
+      const pathA = graph.findNode(
+        (_, attrs) => attrs.label === $settings.pathA
+      );
+      if (pathA) {
+        coCitationResults = coCitation(sigma.getGraph(), pathA, $settings.pathA);
+        console.log("coCitationResults: ", coCitationResults);
+      } else {
+        coCitationResults = undefined;
+      }
+    } else {
+      coCitationResults = undefined;
     }
   }
 

@@ -7,6 +7,7 @@ export enum Mode {
   Navigate = "Navigate",
   ShortestPath = "Shortest Path",
   AdamicAdar = "Adamic Adar",
+  CoCitation = "CoCitation"
 }
 
 interface Settings {

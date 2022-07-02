@@ -69,7 +69,7 @@
       <input type="text" bind:value={$settings.pathB} />
     </div>
   {/if}
-  {#if $settings.mode === Mode.AdamicAdar}
+  {#if $settings.mode === Mode.AdamicAdar || $settings.mode === Mode.CoCitation}
     <div>
       <label for="path">path a</label>
       <input type="text" bind:value={$settings.pathA} />
