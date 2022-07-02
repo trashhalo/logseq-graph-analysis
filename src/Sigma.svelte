@@ -86,17 +86,12 @@
       res.size = maxSize(graph.inDegree(node), 16);
     }
 
-    const label = res.label?.toUpperCase();
-    const search = $settings.search?.toUpperCase();
-
     if (
-      search &&
-      label &&
-      (label.includes(search) ||
-        data["aliases"]?.find((a: string) => a.includes(search)))
+      $settings.search &&
+      res.label &&
+      res.label.toUpperCase().includes($settings.search.toUpperCase())
     ) {
       res.color = orange;
-      res.size = (res.size ?? data.size) + 2;
     }
 
     if ($settings.mode === Mode.ShortestPath) {
