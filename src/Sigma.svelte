@@ -130,7 +130,10 @@
         res.color = orange;
       } else if (adamicAdarResults[node]) {
         res.color = red;
-        res.size = maxSize(5 * adamicAdarResults[node].measure, 16);
+        res.size = maxSize(
+          $settings.bubbleSize * adamicAdarResults[node].measure,
+          32
+        );
         res.label = `${adamicAdarResults[node].measure} ${data.label}`;
       } else {
         res.zIndex = -1;
