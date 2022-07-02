@@ -97,6 +97,7 @@
     ) {
       res.color = orange;
       res.size = (res.size ?? data.size) + 2;
+      res.highlighted = true;
     }
 
     if ($settings.mode === Mode.ShortestPath) {
@@ -128,6 +129,7 @@
         res.size = 10;
         res.zIndex = 2;
         res.color = orange;
+        res.highlighted = true;
       } else if (adamicAdarResults[node]) {
         res.color = red;
         res.size = maxSize(
