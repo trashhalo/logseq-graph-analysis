@@ -71,62 +71,28 @@ function blockToReferences(
 }
 
 async function refToPageRef(
-  aliases: Map<number, number>,
   pages: { id: number }[],
   ref: number
 ): Promise<number | undefined> {
   if (pages.find((p) => p.id === ref)) {
     return ref;
   }
-  if (aliases.has(ref)) {
-    return aliases.get(ref);
-  }
   const block = await logseq.Editor.getBlock(ref);
   if (block && block.page) {
-    const id = block.page.id;
-    if (aliases.has(id)) {
-      return aliases.get(id);
-    } else {
-      return id;
-    }
+    return block.page.id;
   }
 }
 interface Page {
   id: number;
   "journal?": boolean;
   name: string;
-  properties?: {
-    graphHide?: boolean;
-    alias?: string[];
-  };
-}
-
-function pagesToAliasMap(pages: Page[]) {
-  const aliases = new Map<number, number>();
-  for (const page of pages) {
-    if (page.properties && page.properties.alias) {
-      const aliasedPages = page.properties.alias.map((a) =>
-        pages.find((p) => p.name === a)
-      );
-      for (const alias of aliasedPages) {
-        if (alias) {
-          aliases.set(alias.id, page.id);
-        }
-      }
-    }
-  }
-  return aliases;
-}
-
-function removeAliases(aliases: Map<number, number>, pages: Page[]) {
-  return pages.filter((p) => !aliases.has(p.id));
+  properties?: { graphHide?: boolean };
 }
 
 async function buildGraph(): Promise<Graph> {
   const g = new Graph();
-  let pages: Page[] = await logseq.Editor.getAllPages();
-  const aliases = pagesToAliasMap(pages);
-  pages = removeAliases(aliases, pages);
+  const pages: Page[] = await logseq.Editor.getAllPages();
+
   const journals = pages.filter((p) => p["journal?"]);
 
   for (const page of pages) {
@@ -141,13 +107,8 @@ async function buildGraph(): Promise<Graph> {
       continue;
     }
 
-    const aliases: string[] = (page.properties?.alias ?? []).map((a) =>
-      a.toUpperCase()
-    );
-
     g.addNode(page.id, {
       label: page.name,
-      aliases,
     });
   }
 
@@ -162,7 +123,7 @@ async function buildGraph(): Promise<Graph> {
         journals,
         block
       )) {
-        const targetRef = await refToPageRef(aliases, pages, ref.target);
+        const targetRef = await refToPageRef(pages, ref.target);
         if (targetRef && g.hasNode(ref.source) && g.hasNode(targetRef)) {
           if (!g.hasEdge(ref.source, targetRef)) {
             g.addEdge(ref.source, targetRef, { weight: 1 });
