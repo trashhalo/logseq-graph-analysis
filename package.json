@@ -8,13 +8,16 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@iconify-json/mdi": "^1.1.24",
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
     "@tsconfig/svelte": "^2.0.1",
     "@unocss/preset-icons": "^0.41.1",
+    "c8": "^7.11.3",
     "graphology-types": "^0.24.4",
     "svelte": "^3.44.0",
     "svelte-check": "^2.2.7",
@@ -23,7 +26,8 @@
     "typescript": "^4.5.4",
     "unocss": "^0.41.1",
     "vite": "^2.9.9",
-    "vite-plugin-logseq": "^1.1.2"
+    "vite-plugin-logseq": "^1.1.2",
+    "vitest": "^0.16.0"
   },
   "dependencies": {
     "@logseq/libs": "^0.0.6",
