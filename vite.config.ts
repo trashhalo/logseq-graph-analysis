@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import logseqPlugin from "vite-plugin-logseq";
 import Unocss from "unocss/vite";
@@ -15,4 +15,10 @@ export default defineConfig({
       presets: [presetIcons(), presetWind()],
     }),
   ],
+  test: {
+    includeSource: ["src/**/*.{ts,tsx}"],
+    coverage: {
+      reporter: ["text", "html"],
+    },
+  },
 });

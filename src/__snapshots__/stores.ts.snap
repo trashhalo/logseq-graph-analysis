@@ -1,0 +1,243 @@
+// Vitest Snapshot v1
+
+exports[`buildGraph > creates a graph with edges 1`] = `
+{
+  "attributes": {},
+  "edges": [
+    {
+      "attributes": {
+        "weight": 1,
+      },
+      "source": "1",
+      "target": "2",
+    },
+  ],
+  "nodes": [
+    {
+      "attributes": {
+        "label": "A",
+      },
+    },
+    {
+      "attributes": {
+        "label": "B",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
+
+exports[`buildGraph > does not shows journal pages when not requested 1`] = `
+{
+  "attributes": {},
+  "edges": [],
+  "nodes": [
+    {
+      "attributes": {
+        "label": "A",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
+
+exports[`buildGraph > handles block references 1`] = `
+{
+  "attributes": {},
+  "edges": [
+    {
+      "attributes": {
+        "weight": 1,
+      },
+      "source": "1",
+      "target": "2",
+    },
+  ],
+  "nodes": [
+    {
+      "attributes": {
+        "label": "A",
+      },
+    },
+    {
+      "attributes": {
+        "label": "B",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
+
+exports[`buildGraph > increases the weight for multiple edges 1`] = `
+{
+  "attributes": {},
+  "edges": [
+    {
+      "attributes": {
+        "weight": 2,
+      },
+      "source": "1",
+      "target": "2",
+    },
+  ],
+  "nodes": [
+    {
+      "attributes": {
+        "label": "A",
+      },
+    },
+    {
+      "attributes": {
+        "label": "B",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
+
+exports[`buildGraph > links graphs to nested parents 1`] = `
+{
+  "attributes": {},
+  "edges": [
+    {
+      "attributes": {
+        "weight": 1,
+      },
+      "source": "1",
+      "target": "2",
+    },
+    {
+      "attributes": {
+        "weight": 1,
+      },
+      "source": "2",
+      "target": "3",
+    },
+  ],
+  "nodes": [
+    {
+      "attributes": {
+        "label": "A",
+      },
+    },
+    {
+      "attributes": {
+        "label": "B",
+      },
+    },
+    {
+      "attributes": {
+        "label": "C",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
+
+exports[`buildGraph > shows journal pages when requested 1`] = `
+{
+  "attributes": {},
+  "edges": [
+    {
+      "attributes": {
+        "weight": 1,
+      },
+      "source": "1",
+      "target": "2",
+    },
+  ],
+  "nodes": [
+    {
+      "attributes": {
+        "label": "A",
+      },
+    },
+    {
+      "attributes": {
+        "label": "B",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
+
+exports[`buildGraph > skips pages with graph-hide: true 1`] = `
+{
+  "attributes": {},
+  "edges": [],
+  "nodes": [
+    {
+      "attributes": {
+        "label": "A",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
+
+exports[`buildGraph > skips references to journal pages 1`] = `
+{
+  "attributes": {},
+  "edges": [
+    {
+      "attributes": {
+        "weight": 1,
+      },
+      "source": "1",
+      "target": "3",
+    },
+  ],
+  "nodes": [
+    {
+      "attributes": {
+        "label": "A",
+      },
+    },
+    {
+      "attributes": {
+        "label": "C",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
