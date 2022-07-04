@@ -37,3 +37,19 @@ jobs:
 
       - name: Test
         run: nr test
+
+      - name: Build Unpacked Plugin
+        run: |
+          mkdir logseq-graph-analysis
+          cp package.json README.md logseq-graph-analysis
+          mv dist logseq-graph-analysis
+
+      - uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          state: open
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: logseq-graph-analysis-${{ steps.findPr.outputs.pr }}
+          path: logseq-graph-analysis
