@@ -11,15 +11,15 @@
   import type Graph from "graphology";
   import type { SigmaNodeEventPayload } from "sigma/sigma";
   import type { Attributes } from "graphology-types";
-  import toUndirected from "graphology-operators/to-undirected";
   import type { EdgeDisplayData, NodeDisplayData } from "sigma/types";
   import { Mode, settings } from "./stores";
-  import { adamicAdar, ResultMap } from "./analysis";
+  import { adamicAdar, ResultMap } from "./adamicAdar";
   import {
     shortestPathDirected,
     shortestPathUndirected,
     shortestPathEdgePredicate,
   } from "./shortestPath";
+  import { nodeNameIndex } from "./graph";
 
   export let graph: Graph;
 
@@ -90,21 +90,24 @@
       res.size = maxSize(graph.inDegree(node), 16);
     }
 
+    const label = res.label?.toUpperCase();
+    const search = $settings.search?.toUpperCase();
+
     if (
-      $settings.search &&
-      res.label &&
-      res.label.toUpperCase().includes($settings.search.toUpperCase())
+      search &&
+      label &&
+      (label.includes(search) ||
+        data["aliases"]?.find((a: string) => a.includes(search)))
     ) {
       res.color = orange;
+      res.size = (res.size ?? data.size) + 2;
     }
 
     if ($settings.mode === Mode.ShortestPath) {
-      const pathA = graph.findNode(
-        (_, attrs) => attrs.label === $settings.pathA
-      );
-      const pathB = graph.findNode(
-        (_, attrs) => attrs.label === $settings.pathB
-      );
+      const pathA =
+        $settings.pathA && nodeIndex?.get($settings.pathA.toUpperCase());
+      const pathB =
+        $settings.pathB && nodeIndex?.get($settings.pathB.toUpperCase());
 
       if (
         shortestNodePath?.includes(node) ||
@@ -120,9 +123,8 @@
     }
 
     if ($settings.mode === Mode.AdamicAdar && adamicAdarResults) {
-      const pathA = graph.findNode(
-        (_, attrs) => attrs.label === $settings.pathA
-      );
+      const pathA =
+        $settings.pathA && nodeIndex?.get($settings.pathA.toUpperCase());
       if (pathA && node === pathA) {
         res.size = 10;
         res.zIndex = 2;
@@ -146,7 +148,12 @@
   let shortestNodePath: Array<string> | undefined | null;
   let shortestEdgePath: Array<string> | undefined | null;
   let adamicAdarResults: ResultMap | undefined;
+  let nodeIndex: Map<string, string> | undefined;
   $: {
+    if (sigma) {
+      nodeIndex = nodeNameIndex(sigma.getGraph());
+    }
+
     if (
       sigma &&
       $settings.mode === Mode.ShortestPath &&
@@ -154,33 +161,22 @@
       $settings.pathB
     ) {
       const graph = sigma.getGraph();
-      const pathA = graph.findNode(
-        (_, attrs) => attrs.label === $settings.pathA
-      );
-      const pathB = graph.findNode(
-        (_, attrs) => attrs.label === $settings.pathB
-      );
-      if (pathA && pathB) {
-        const results = $settings.directed
-          ? shortestPathDirected(graph, pathA, pathB)
-          : shortestPathUndirected(graph, pathA, pathB);
-        shortestNodePath = results.nodes;
-        shortestEdgePath = results.edges;
-      } else {
-        shortestNodePath = undefined;
-        shortestEdgePath = undefined;
-      }
+      const results = $settings.directed
+        ? shortestPathDirected(graph, $settings.pathA, $settings.pathB)
+        : shortestPathUndirected(graph, $settings.pathB, $settings.pathA);
+      shortestNodePath = results.nodes;
+      shortestEdgePath = results.edges;
     } else {
       shortestNodePath = undefined;
       shortestEdgePath = undefined;
     }
 
     if (sigma && $settings.mode === Mode.AdamicAdar && $settings.pathA) {
-      const pathA = graph.findNode(
-        (_, attrs) => attrs.label === $settings.pathA
-      );
+      const graph = sigma.getGraph();
+      const pathA =
+        $settings.pathA && nodeIndex?.get($settings.pathA.toUpperCase());
       if (pathA) {
-        adamicAdarResults = adamicAdar(sigma.getGraph(), pathA);
+        adamicAdarResults = adamicAdar(graph, pathA);
         console.log(adamicAdarResults);
       } else {
         adamicAdarResults = undefined;
