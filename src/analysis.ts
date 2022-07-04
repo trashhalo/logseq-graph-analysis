@@ -50,11 +50,15 @@ export function adamicAdar(graph: Graph, node: string) {
 }
 
 // Simplified version of CoCitation analysis
-// Original implementation and SkepticMystic Obsidian plugin look at proximity of links. 
+// Original implementation and SkepticMystic Obsidian plugin look at proximity of links.
 // The version below just takes links pointing at same information at block level
 // See here for original article: https://isg.beel.org/pubs/Citation%20Proximity%20Analysis%20(CPA)%20-%20A%20new%20approach%20for%20identifying%20related%20work%20based%20on%20Co-Citation%20Analysis%20--%20preprint.pdf
 
-export const coCitation = async(graph: Graph, node: string, nodeName: string) =>  {
+export const coCitation = async (
+  graph: Graph,
+  node: string,
+  nodeName: string
+) => {
   const logseqQuery = `[:find ?b ?page 
     :where 
       [?b :block/path-refs ?link]
@@ -63,29 +67,27 @@ export const coCitation = async(graph: Graph, node: string, nodeName: string) =>
       [?otherlinks :block/name ?page]
     ]`;
   const queryResults = await logseq.DB.datascriptQuery(logseqQuery);
-  console.log("Logseq QueryResults: ", queryResults)
+  console.log("Logseq QueryResults: ", queryResults);
 
-  // group links by frequency 
-  const counter: { [key: string]: number; } = {};
-  for (const link of queryResults){
-    const key = graph.findNode(
-      (_, attrs) => attrs.label === link[1]
-    );
-    if (!key) {continue};
-    counter[key] ? counter[key] += 1 : counter[key] = 1;
+  // group links by frequency
+  const counter: { [key: string]: number } = {};
+  for (const link of queryResults) {
+    const key = graph.findNode((_, attrs) => attrs.label === link[1]);
+    if (!key) {
+      continue;
+    }
+    counter[key] ? (counter[key] += 1) : (counter[key] = 1);
   }
-  console.log("counter: ", counter)
+  console.log("counter: ", counter);
 
-  // get highest frequency and normalize 
+  // get highest frequency and normalize
   const maxVal = Math.max(...Object.values(counter));
   const results: any = {};
-  for (const key of Object.keys(counter)){
-    results[key]=  {measure: roundNumber(10 * counter[key]/maxVal), extra: ['1']}
+  for (const key of Object.keys(counter)) {
+    results[key] = {
+      measure: roundNumber((10 * counter[key]) / maxVal),
+      extra: ["1"],
+    };
   }
-  console.log("return results: ", results.sort((a, b) => {
-    return results[a].measure - results[b].measure;
-  }));
-
-  //console.log( "return: ", results);
   return results;
-}
+};
