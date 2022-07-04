@@ -37,3 +37,14 @@ jobs:
 
       - name: Test
         run: nr test
+
+      - name: Build Unpacked Plugin
+        run: |
+          mkdir logseq-graph-analysis
+          cp package.json README.md logseq-graph-analysis
+          mv dist logseq-graph-analysis
+          zip -r logseq-graph-analysis.zip logseq-graph-analysis
+
+      - uses: actions/upload-artifact@v3
+        with:
+          path: logseq-graph-analysis.zip
