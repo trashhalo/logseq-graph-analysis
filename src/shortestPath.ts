@@ -1,13 +1,19 @@
 import Graph from "graphology";
 import { toUndirected } from "graphology-operators";
 import { dijkstra, edgePathFromNodePath } from "graphology-shortest-path";
-import type { Attributes } from "graphology-types";
+import { findNode } from "./graph";
 
 export function shortestPathDirected(
   graph: Graph,
-  pathA: string,
-  pathB: string
+  pathAStr: string,
+  pathBStr: string
 ) {
+  const pathA = findNode(graph, pathAStr);
+  const pathB = findNode(graph, pathBStr);
+  if (!pathA || !pathB) {
+    return { nodes: undefined, edges: undefined } as const;
+  }
+
   const nodes =
     dijkstra.bidirectional(graph, pathA, pathB) ||
     dijkstra.bidirectional(graph, pathB, pathA);
@@ -21,9 +27,15 @@ export function shortestPathDirected(
 
 export function shortestPathUndirected(
   graph: Graph,
-  pathA: string,
-  pathB: string
+  pathAStr: string,
+  pathBStr: string
 ) {
+  const pathA = findNode(graph, pathAStr);
+  const pathB = findNode(graph, pathBStr);
+  if (!pathA && !pathB) {
+    return { nodes: undefined, edges: undefined } as const;
+  }
+
   const undirected = toUndirected(graph);
 
   const nodes = dijkstra.bidirectional(undirected, pathA, pathB);
@@ -56,9 +68,9 @@ if (import.meta.vitest) {
   describe("shortestPathDirected", () => {
     it("returns directed paths", () => {
       const graph = new Graph();
-      graph.addNode("A");
-      graph.addNode("B");
-      graph.addNode("C");
+      graph.addNode("A", { label: "A" });
+      graph.addNode("B", { label: "B" });
+      graph.addNode("C", { label: "C" });
       graph.addEdge("A", "B");
       graph.addEdge("B", "C");
       const { nodes, edges } = shortestPathDirected(graph, "A", "C");
@@ -68,9 +80,9 @@ if (import.meta.vitest) {
 
     it("returns directed paths even if backwards", () => {
       const graph = new Graph();
-      graph.addNode("A");
-      graph.addNode("B");
-      graph.addNode("C");
+      graph.addNode("A", { label: "A" });
+      graph.addNode("B", { label: "B" });
+      graph.addNode("C", { label: "C" });
       graph.addEdge("A", "B");
       graph.addEdge("B", "C");
       const { nodes, edges } = shortestPathDirected(graph, "C", "A");
@@ -80,9 +92,9 @@ if (import.meta.vitest) {
 
     it("will not return undirected paths", () => {
       const graph = new Graph();
-      graph.addNode("A");
-      graph.addNode("B");
-      graph.addNode("C");
+      graph.addNode("A", { label: "A" });
+      graph.addNode("B", { label: "B" });
+      graph.addNode("C", { label: "C" });
       graph.addEdge("A", "B");
       graph.addEdge("C", "B");
       const { nodes, edges } = shortestPathDirected(graph, "C", "A");
@@ -92,9 +104,9 @@ if (import.meta.vitest) {
 
     it("will not return disconnected paths", () => {
       const graph = new Graph();
-      graph.addNode("A");
-      graph.addNode("B");
-      graph.addNode("C");
+      graph.addNode("A", { label: "A" });
+      graph.addNode("B", { label: "B" });
+      graph.addNode("C", { label: "C" });
       graph.addEdge("A", "B");
       const { nodes, edges } = shortestPathDirected(graph, "A", "C");
       expect(nodes).toBeUndefined();
@@ -105,9 +117,9 @@ if (import.meta.vitest) {
   describe("shortestPathUndirected", () => {
     it("will return undirected paths", () => {
       const graph = new Graph();
-      graph.addNode("A");
-      graph.addNode("B");
-      graph.addNode("C");
+      graph.addNode("A", { label: "A" });
+      graph.addNode("B", { label: "B" });
+      graph.addNode("C", { label: "C" });
       graph.addEdge("A", "B");
       graph.addEdge("C", "B");
       const { nodes, edges } = shortestPathUndirected(graph, "A", "C");
@@ -117,13 +129,23 @@ if (import.meta.vitest) {
 
     it("will not return disconnected paths", () => {
       const graph = new Graph();
-      graph.addNode("A");
-      graph.addNode("B");
-      graph.addNode("C");
+      graph.addNode("A", { label: "A" });
+      graph.addNode("B", { label: "B" });
+      graph.addNode("C", { label: "C" });
       graph.addEdge("A", "B");
       const { nodes, edges } = shortestPathUndirected(graph, "A", "C");
       expect(nodes).toBeUndefined();
       expect(edges).toBeUndefined();
+    });
+
+    it("returns paths that involve aliases", () => {
+      const graph = new Graph();
+      graph.addNode("A", { label: "A", aliases: ["B"] });
+      graph.addNode("C", { label: "C" });
+      graph.addEdge("C", "A");
+      const { nodes, edges } = shortestPathDirected(graph, "B", "C");
+      expect(nodes).toMatchObject(["C", "A"]);
+      expect(edges).toMatchObject([graph.edge("C", "A")]);
     });
   });
 }
