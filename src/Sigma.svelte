@@ -13,7 +13,7 @@
   import type { Attributes } from "graphology-types";
   import type { EdgeDisplayData, NodeDisplayData } from "sigma/types";
   import { Mode, settings } from "./stores";
-  import { adamicAdar, ResultMap } from "./adamicAdar";
+  import { adamicAdar, coCitation, ResultMap } from "./adamicAdar";
   import {
     shortestPathDirected,
     shortestPathUndirected,
@@ -101,6 +101,7 @@
     ) {
       res.color = orange;
       res.size = (res.size ?? data.size) + 2;
+      res.highlighted = true;
     }
 
     if ($settings.mode === Mode.ShortestPath) {
@@ -129,6 +130,7 @@
         res.size = 10;
         res.zIndex = 2;
         res.color = orange;
+        res.highlighted = true;
       } else if (adamicAdarResults[node]) {
         res.color = red;
         res.size = maxSize(
@@ -136,9 +138,18 @@
           32
         );
         res.label = `${adamicAdarResults[node].measure} ${data.label}`;
-      } else {
-        res.zIndex = -1;
-        res.size = 1;
+      }
+    }
+    if ($settings.mode === Mode.CoCitation && coCitationResults) {
+      const pathA =
+        $settings.pathA && nodeIndex?.get($settings.pathA.toUpperCase());
+      if (pathA && node === pathA) {
+        res.size = 10;
+        res.zIndex = 2;
+        res.color = orange;
+        res.highlighted = true;
+        res.size = $settings.bubbleSize * coCitationResults[node].measure;
+        res.label = `${coCitationResults[node].measure} ${data.label}`;
       }
     }
 
@@ -149,6 +160,7 @@
   let shortestEdgePath: Array<string> | undefined | null;
   let adamicAdarResults: ResultMap | undefined;
   let nodeIndex: Map<string, string> | undefined;
+  let coCitationResults: any;
   $: {
     if (sigma) {
       nodeIndex = nodeNameIndex(sigma.getGraph());
@@ -170,7 +182,6 @@
       shortestNodePath = undefined;
       shortestEdgePath = undefined;
     }
-
     if (sigma && $settings.mode === Mode.AdamicAdar && $settings.pathA) {
       const graph = sigma.getGraph();
       const pathA =
@@ -183,6 +194,21 @@
       }
     } else {
       adamicAdarResults = undefined;
+    }
+    if (sigma && $settings.mode === Mode.CoCitation && $settings.pathA) {
+      const pathA = nodeIndex?.get($settings.pathA.toUpperCase());
+      if (pathA) {
+        coCitationResults = coCitation(
+          sigma.getGraph(),
+          pathA,
+          $settings.pathA
+        );
+        console.log("coCitationResults: ", coCitationResults);
+      } else {
+        coCitationResults = undefined;
+      }
+    } else {
+      coCitationResults = undefined;
     }
   }
 

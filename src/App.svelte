@@ -47,7 +47,7 @@
         });
         logseq.hideMainUI();
       }
-    } else if ($settings.mode === Mode.AdamicAdar) {
+    } else if ($settings.mode === Mode.AdamicAdar || $settings.mode === Mode.CoCitation ) {
       const page = await logseq.Editor.getPage(+event.detail);
       if (page && $settings.pathA !== page.name) {
         $settings.pathA = page.name;
