@@ -1,5 +1,6 @@
 <script lang="ts">
   import type Graph from "graphology";
+  import { labelPropagation } from "./labelPropagation";
 
   import { graph, Mode, settings } from "./stores";
   function handlShortestPathClear() {
@@ -76,7 +77,25 @@
     </div>
     <div>
       <label for="bubbleSize">bubble size</label>
-      <input type="range" min="0.01" step="0.1" max="10" bind:value={$settings.bubbleSize} />
+      <input
+        type="range"
+        min="0.01"
+        step="0.1"
+        max="10"
+        bind:value={$settings.bubbleSize}
+      />
+    </div>
+  {/if}
+  {#if $settings.mode === Mode.LabelPropagation}
+    <div>
+      <label for="bubbleSize">color size</label>
+      <input
+        type="range"
+        min="1"
+        step="1"
+        max="10"
+        bind:value={$settings.colorSize}
+      />
     </div>
   {/if}
 </div>

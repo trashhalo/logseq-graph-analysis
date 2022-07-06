@@ -20,6 +20,7 @@
     shortestPathEdgePredicate,
   } from "./shortestPath";
   import { nodeNameIndex } from "./graph";
+  import { labelPropagation } from "./labelPropagation";
 
   export let graph: Graph;
 
@@ -30,6 +31,9 @@
   const dispatch = createEventDispatcher();
 
   const red = "#f87171";
+  const green = "#4ade80";
+  const blue = "#60a5fa";
+  const yellow = "#facc15";
   const orange = "#fb923c";
   const grey = "#a3a3a3";
 
@@ -155,6 +159,13 @@
       }
     }
 
+    if ($settings.mode === Mode.LabelPropagation && labelPropagationFn) {
+      if ($settings.labels.includes(node)) {
+        res.highlighted = true;
+      }
+      res.color = labelPropagationFn(node);
+    }
+
     return res;
   };
 
@@ -163,6 +174,7 @@
   let adamicAdarResults: ResultMap | undefined;
   let nodeIndex: Map<string, string> | undefined;
   let coCitationResults: any;
+  let labelPropagationFn: ((node: string) => string) | undefined;
 
   $: if (sigma) {
     nodeIndex = nodeNameIndex(sigma.getGraph());
@@ -202,17 +214,34 @@
   $: if (sigma && $settings.mode === Mode.CoCitation && $settings.pathA) {
     const pathA = nodeIndex?.get($settings.pathA.toUpperCase());
     if (pathA) {
+      const node = sigma.getGraph().getNodeAttributes(pathA);
       (async () =>
-        (coCitationResults = await coCitation(
-          sigma.getGraph(),
-          pathA,
-          $settings.pathA!
-        )))();
+        (coCitationResults = await coCitation(sigma.getGraph(), node)))();
     } else {
       coCitationResults = undefined;
     }
   } else {
     coCitationResults = undefined;
+  }
+
+  $: if (
+    sigma &&
+    $settings.mode == Mode.LabelPropagation &&
+    $settings.labels.length
+  ) {
+    labelPropagationFn = labelPropagation(
+      sigma.getGraph(),
+      $settings.labels,
+      {
+        red,
+        green,
+        blue,
+        yellow,
+      },
+      $settings.colorSize
+    );
+  } else {
+    labelPropagationFn = undefined;
   }
 
   const edgeReducer = (edge: string, data: Attributes) => {
@@ -224,6 +253,9 @@
     ) {
       res.color = red;
       res.size = 5;
+    }
+    if (sigma && $settings.mode === Mode.LabelPropagation) {
+      res.color = "#f1f5f9";
     }
     return res;
   };

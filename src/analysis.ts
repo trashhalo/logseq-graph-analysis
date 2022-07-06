@@ -4,6 +4,8 @@ https://raw.githubusercontent.com/SkepticMystic/graph-analysis/master/LICENSE
 */
 
 import type Graph from "graphology";
+import type { Attributes } from "graphology-types";
+import { findNode } from "./graph";
 
 const DECIMALS = 4;
 
@@ -54,25 +56,24 @@ export function adamicAdar(graph: Graph, node: string) {
 // The version below just takes links pointing at same information at block level
 // See here for original article: https://isg.beel.org/pubs/Citation%20Proximity%20Analysis%20(CPA)%20-%20A%20new%20approach%20for%20identifying%20related%20work%20based%20on%20Co-Citation%20Analysis%20--%20preprint.pdf
 
-export const coCitation = async (
-  graph: Graph,
-  node: string,
-  nodeName: string
-) => {
-  const logseqQuery = `[:find ?b ?page 
+export const coCitation = async (graph: Graph, node: Attributes) => {
+  const logseqQuery = `[
+    :find ?b ?page 
+    :in $ [?names ...]
     :where 
       [?b :block/path-refs ?link]
-      [?link :block/name "${nodeName}"]
+      [?link :block/name ?names]
       [?b :block/path-refs ?otherlinks]
       [?otherlinks :block/name ?page]
     ]`;
-  const queryResults = await logseq.DB.datascriptQuery(logseqQuery);
+  const names = [node.label.toUpperCase(), node.aliases];
+  const queryResults = await logseq.DB.datascriptQuery(logseqQuery, ...names);
   console.log("Logseq QueryResults: ", queryResults);
 
   // group links by frequency
   const counter: { [key: string]: number } = {};
   for (const link of queryResults) {
-    const key = graph.findNode((_, attrs) => attrs.label === link[1]);
+    const key = findNode(graph, link[1]);
     if (!key) {
       continue;
     }

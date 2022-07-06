@@ -47,7 +47,10 @@
         });
         logseq.hideMainUI();
       }
-    } else if ($settings.mode === Mode.AdamicAdar || $settings.mode === Mode.CoCitation ) {
+    } else if (
+      $settings.mode === Mode.AdamicAdar ||
+      $settings.mode === Mode.CoCitation
+    ) {
       const page = await logseq.Editor.getPage(+event.detail);
       if (page && $settings.pathA !== page.name) {
         $settings.pathA = page.name;
@@ -64,6 +67,18 @@
       if (page) {
         $settings.pathB = page.name;
       }
+    } else if ($settings.mode === Mode.LabelPropagation) {
+      const index = $settings.labels.indexOf(event.detail);
+      if (index === -1) {
+        $settings.labels = [...$settings.labels, event.detail];
+      } else {
+        if ($settings.labels.length === 1) {
+          $settings.labels = [];
+        } else {
+          $settings.labels = $settings.labels.splice(index, 1);
+        }
+      }
+      console.log($settings.labels);
     }
   };
 
