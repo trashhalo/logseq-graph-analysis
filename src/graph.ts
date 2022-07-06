@@ -43,7 +43,8 @@ export async function buildGraph(
 
     g.addNode(page.id, {
       label: page.name,
-      aliases: pageToAliases(page),
+      aliases: pageToAliases(page, true),
+      rawAliases: pageToAliases(page, false),
     });
   }
 
@@ -107,8 +108,10 @@ export function removeAliases(
   return pages.filter((p) => !aliases.has(p.id));
 }
 
-export function pageToAliases(page: Page): string[] {
-  return (page.properties?.alias ?? []).map((a) => a.toUpperCase());
+export function pageToAliases(page: Page, upper: boolean): string[] {
+  return (page.properties?.alias ?? []).map((a) =>
+    upper ? a.toUpperCase() : a
+  );
 }
 
 export function findNode(graph: Graph, name?: string): string | undefined {
