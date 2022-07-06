@@ -69,14 +69,14 @@
       <input type="text" bind:value={$settings.pathB} />
     </div>
   {/if}
-  {#if $settings.mode === Mode.AdamicAdar}
+  {#if $settings.mode === Mode.AdamicAdar || $settings.mode === Mode.CoCitation}
     <div>
       <label for="path">path a</label>
       <input type="text" bind:value={$settings.pathA} />
     </div>
     <div>
       <label for="bubbleSize">bubble size</label>
-      <input type="range" min="0.01" max="10" bind:value={$settings.bubbleSize} />
+      <input type="range" min="0.01" step="0.1" max="10" bind:value={$settings.bubbleSize} />
     </div>
   {/if}
 </div>

@@ -17,12 +17,14 @@ exports[`buildGraph > creates a graph with edges 1`] = `
       "attributes": {
         "aliases": [],
         "label": "A",
+        "rawAliases": [],
       },
     },
     {
       "attributes": {
         "aliases": [],
         "label": "B",
+        "rawAliases": [],
       },
     },
   ],
@@ -43,6 +45,7 @@ exports[`buildGraph > does not shows journal pages when not requested 1`] = `
       "attributes": {
         "aliases": [],
         "label": "A",
+        "rawAliases": [],
       },
     },
   ],
@@ -71,12 +74,14 @@ exports[`buildGraph > handles block references 1`] = `
       "attributes": {
         "aliases": [],
         "label": "A",
+        "rawAliases": [],
       },
     },
     {
       "attributes": {
         "aliases": [],
         "label": "B",
+        "rawAliases": [],
       },
     },
   ],
@@ -105,12 +110,14 @@ exports[`buildGraph > increases the weight for multiple edges 1`] = `
       "attributes": {
         "aliases": [],
         "label": "A",
+        "rawAliases": [],
       },
     },
     {
       "attributes": {
         "aliases": [],
         "label": "B",
+        "rawAliases": [],
       },
     },
   ],
@@ -146,18 +153,21 @@ exports[`buildGraph > links graphs to nested parents 1`] = `
       "attributes": {
         "aliases": [],
         "label": "A",
+        "rawAliases": [],
       },
     },
     {
       "attributes": {
         "aliases": [],
         "label": "B",
+        "rawAliases": [],
       },
     },
     {
       "attributes": {
         "aliases": [],
         "label": "C",
+        "rawAliases": [],
       },
     },
   ],
@@ -188,12 +198,16 @@ exports[`buildGraph > merges alias nodes 1`] = `
           "B",
         ],
         "label": "A",
+        "rawAliases": [
+          "B",
+        ],
       },
     },
     {
       "attributes": {
         "aliases": [],
         "label": "C",
+        "rawAliases": [],
       },
     },
   ],
@@ -222,12 +236,14 @@ exports[`buildGraph > shows journal pages when requested 1`] = `
       "attributes": {
         "aliases": [],
         "label": "A",
+        "rawAliases": [],
       },
     },
     {
       "attributes": {
         "aliases": [],
         "label": "B",
+        "rawAliases": [],
       },
     },
   ],
@@ -248,6 +264,7 @@ exports[`buildGraph > skips pages with graph-hide: true 1`] = `
       "attributes": {
         "aliases": [],
         "label": "A",
+        "rawAliases": [],
       },
     },
   ],
@@ -276,12 +293,14 @@ exports[`buildGraph > skips references to journal pages 1`] = `
       "attributes": {
         "aliases": [],
         "label": "A",
+        "rawAliases": [],
       },
     },
     {
       "attributes": {
         "aliases": [],
         "label": "C",
+        "rawAliases": [],
       },
     },
   ],
