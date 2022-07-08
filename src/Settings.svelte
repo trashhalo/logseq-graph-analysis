@@ -42,6 +42,10 @@
       <option selected value="in">inbound links</option>
       <option value="out">outbound links</option>
     </select>
+    <div>
+      <label for="nodeSize">node size</label>
+      <input class="slider nodeSize" type="range" min="0.01" step="0.1" max="3" bind:value={$settings.nodeSize} />
+    </div>
   </div>
   <hr />
   <div>
@@ -75,8 +79,8 @@
       <input type="text" bind:value={$settings.pathA} />
     </div>
     <div>
-      <label for="bubbleSize">bubble size</label>
-      <input type="range" min="0.01" step="0.1" max="10" bind:value={$settings.bubbleSize} />
+      <label for="bubbleSize">highlighted note size</label>
+      <input class="slider highlightedNodeSize" type="range" min="0.01" step="0.1" max="10" bind:value={$settings.highlightedNodeSize} />
     </div>
   {/if}
 </div>
@@ -93,4 +97,51 @@
     margin: 0;
     background-color: rgba(255, 255, 255, 0.8);
   }
+  .slider {
+    width: 100%;
+    height: 1.5em;
+    background: #fff;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    -webkit-appearance: none;
+    transition: opacity .2s;
+  }
+  .slider:hover {
+    opacity: 0.8;
+  }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border-radius: 1.5em;
+    border: 1px solid #b2b2b2;
+    appearance: none;
+    width: 1.5em;
+    height: 1.5em;
+    cursor: pointer;
+    margin-top: -0.5em; 
+    margin-bottom: -0.5em;
+  }
+  .slider::-webkit-slider-runnable-track {
+    height: 0.7em;
+    border: 1px solid #b2b2b2;
+    border-radius: 0.5em;
+  }
+  .slider::-moz-range-thumb {
+    width: 1.5em;
+    height: 1.5em;
+    cursor: pointer;
+  }
+  .nodeSize {color: grey;}
+  .nodeSize::-webkit-slider-thumb {background: grey;}
+  .nodeSize::-webkit-slider-runnable-track {background: lightgray;}
+  .nodeSize::-moz-range-thumb {background: grey}
+  .highlightedNodeSize {color: #f87171}
+  .highlightedNodeSize::-webkit-slider-thumb {background: #f87171;}
+  .highlightedNodeSize::-webkit-slider-runnable-track {background: #FFCCCC;}
+  .highlightedNodeSize::-moz-range-thumb {background: #f87171}
+
 </style>
+
+
+
+

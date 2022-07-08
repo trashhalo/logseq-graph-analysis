@@ -88,6 +88,11 @@
       res.size = maxSize(Math.max(2, graph.neighbors(node).length / 2), 16);
     } else if ($settings.size === "out") {
       res.size = maxSize(graph.inDegree(node), 16);
+    } 
+
+    if (res.size) {
+      res.size = $settings.nodeSize * res.size;
+      if (res.size<1) {res.size = 1 }
     }
 
     const label = res.label?.toUpperCase();
@@ -103,6 +108,8 @@
       res.size = (res.size ?? data.size) + 2;
       res.highlighted = true;
     }
+
+
 
     if ($settings.mode === Mode.ShortestPath) {
       const pathA =
@@ -134,7 +141,7 @@
       } else if (adamicAdarResults[node]) {
         res.color = red;
         res.size = maxSize(
-          $settings.bubbleSize * adamicAdarResults[node].measure,
+          $settings.highlightedNodeSize * adamicAdarResults[node].measure,
           32
         );
         res.label = `${adamicAdarResults[node].measure} ${data.label}`;
@@ -149,12 +156,12 @@
         res.color = orange;
         res.highlighted = true;
       } else if (coCitationResults[node]) {
+        res.zIndex = 2;
         res.color = red;
-        res.size = $settings.bubbleSize * coCitationResults[node].measure;
+        res.size = $settings.highlightedNodeSize * coCitationResults[node].measure;
         res.label = `${coCitationResults[node].measure} ${data.label}`;
       }
     }
-
     return res;
   };
 

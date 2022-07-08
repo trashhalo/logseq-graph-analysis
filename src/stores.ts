@@ -18,7 +18,8 @@ interface Settings {
   gravity: number;
   mode: Mode;
   directed: boolean;
-  bubbleSize: number;
+  nodeSize: number;
+  highlightedNodeSize: number;
 }
 
 interface Store {
@@ -65,5 +66,6 @@ export const settings: Writable<Settings> = writable({
   gravity: 0.05,
   mode: Mode.Navigate,
   directed: true,
-  bubbleSize: 5,
+  nodeSize: 1,
+  highlightedNodeSize: 5
 });
