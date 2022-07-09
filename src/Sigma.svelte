@@ -94,6 +94,7 @@
     const search = $settings.search?.toUpperCase();
 
     if (
+      !$settings.filter &&
       search &&
       label &&
       (label.includes(search) ||

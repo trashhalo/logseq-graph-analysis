@@ -56,7 +56,7 @@ export function adamicAdar(graph: Graph, node: string) {
 // The version below just takes links pointing at same information at block level
 // See here for original article: https://isg.beel.org/pubs/Citation%20Proximity%20Analysis%20(CPA)%20-%20A%20new%20approach%20for%20identifying%20related%20work%20based%20on%20Co-Citation%20Analysis%20--%20preprint.pdf
 
-export const coCitation = async (graph: Graph, node: Attributes) => {
+export const coCitation = async (graph: Graph, node: string) => {
   const logseqQuery = (name: string) => `[
     :find ?b ?page 
     :where 

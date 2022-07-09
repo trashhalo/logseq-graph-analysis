@@ -1,6 +1,4 @@
 <script lang="ts">
-  import type Graph from "graphology";
-
   import { graph, Mode, settings } from "./stores";
   function handlShortestPathClear() {
     $settings.pathA = undefined;
@@ -36,6 +34,22 @@
     <label for="search">search</label>
     <input type="text" bind:value={$settings.search} />
   </div>
+  <div>
+    <label for="filter">filter</label>
+    <input type="checkbox" bind:checked={$settings.filter} />
+  </div>
+  {#if $settings.filter}
+    <div>
+      <label for="nhops">n hops</label>
+      <input
+        type="range"
+        min="1"
+        step="1"
+        max="10"
+        bind:value={$settings.filterLength}
+      />
+    </div>
+  {/if}
   <div>
     <label for="size">size</label>
     <select id="size" name="size" bind:value={$settings.size}>
@@ -76,7 +90,13 @@
     </div>
     <div>
       <label for="bubbleSize">bubble size</label>
-      <input type="range" min="0.01" step="0.1" max="10" bind:value={$settings.bubbleSize} />
+      <input
+        type="range"
+        min="0.01"
+        step="0.1"
+        max="10"
+        bind:value={$settings.bubbleSize}
+      />
     </div>
   {/if}
 </div>

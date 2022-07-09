@@ -1,5 +1,8 @@
 <script lang="ts">
+  import type Graph from "graphology";
+
   import { onMount } from "svelte";
+  import { filter } from "./graph";
   import Settings from "./Settings.svelte";
   import Sigma from "./Sigma.svelte";
   import { uiVisible, store, graph, settings, Mode } from "./stores";
@@ -47,7 +50,10 @@
         });
         logseq.hideMainUI();
       }
-    } else if ($settings.mode === Mode.AdamicAdar || $settings.mode === Mode.CoCitation ) {
+    } else if (
+      $settings.mode === Mode.AdamicAdar ||
+      $settings.mode === Mode.CoCitation
+    ) {
       const page = await logseq.Editor.getPage(+event.detail);
       if (page && $settings.pathA !== page.name) {
         $settings.pathA = page.name;
@@ -75,6 +81,35 @@
   function handleCloseClick() {
     logseq.hideMainUI();
   }
+
+  let graphWas: Graph | undefined;
+  async function filteredGraph(
+    graphP: Promise<Graph>,
+    filterEnabled: boolean,
+    search: string | undefined,
+    filterLength: number
+  ): Promise<Graph> {
+    const graph = (await graphP).copy();
+    if (graphWas) {
+      for (const node of graphWas.nodeEntries()) {
+        graph.updateNodeAttribute(node.node, "x", () => node.attributes.x);
+        graph.updateNodeAttribute(node.node, "y", () => node.attributes.y);
+      }
+    }
+    if (!filterEnabled || !search) {
+      graphWas = graph;
+      return graph;
+    }
+
+    const filterFn = filter(graph, search);
+    for (const node of graph.nodes()) {
+      if (filterFn(node, filterLength)) {
+        graph.dropNode(node);
+      }
+    }
+    graphWas = graph;
+    return graph;
+  }
 </script>
 
 <svelte:window on:keydown={handleKeydown} on:keyup={handleKeyup} />
@@ -89,10 +124,10 @@
         <div class="i-mdi-close text-slate-600" />
       </button>
     </div>
-    {#await $graph then graph}
+    {#await filteredGraph($graph, $settings.filter, $settings.search, $settings.filterLength) then graph}
       <Sigma on:nodeclick={handleNodeClick} {graph} />
-      <Settings />
     {/await}
+    <Settings />
   {/if}
 </main>
 

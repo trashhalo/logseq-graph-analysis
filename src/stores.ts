@@ -7,7 +7,7 @@ export enum Mode {
   Navigate = "Navigate",
   ShortestPath = "Shortest Path",
   AdamicAdar = "Adamic Adar",
-  CoCitation = "CoCitation"
+  CoCitation = "CoCitation",
 }
 
 interface Settings {
@@ -19,6 +19,8 @@ interface Settings {
   mode: Mode;
   directed: boolean;
   bubbleSize: number;
+  filter: boolean;
+  filterLength: number;
 }
 
 interface Store {
@@ -66,4 +68,6 @@ export const settings: Writable<Settings> = writable({
   mode: Mode.Navigate,
   directed: true,
   bubbleSize: 5,
+  filter: false,
+  filterLength: 3,
 });

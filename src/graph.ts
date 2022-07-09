@@ -5,6 +5,8 @@ import type {
 } from "@logseq/libs/dist/LSPlugin";
 import Graph from "graphology";
 import random from "graphology-layout/random";
+import { singleSourceLength } from "graphology-shortest-path";
+import { toUndirected } from "graphology-operators";
 import {
   blockToReferences,
   refToPageRef,
@@ -23,6 +25,8 @@ export async function buildGraph(
   getSettings: getSettingsFn,
   getBlock: getBlockFn
 ): Promise<Graph> {
+  console.log("building graph");
+
   const g = new Graph();
   let pages = await getAllPages();
   const aliases = pagesToAliasMap(pages);
@@ -138,6 +142,35 @@ export function nodeNameIndex(graph: Graph): Map<string, string> {
     }
   }
   return map;
+}
+
+export function filter(
+  graph: Graph,
+  search: string
+): (node: string, searchLen: number) => boolean {
+  const undirected = toUndirected(graph);
+  const map = new Map<string, number>();
+  for (const node of graph.nodeEntries()) {
+    const label = node.attributes.label.toUpperCase();
+    const searchUp = search.toUpperCase();
+    if (label.includes(searchUp)) {
+      const len = singleSourceLength(undirected, node.node);
+      for (const [key, val] of Object.entries(len)) {
+        const cur = map.get(key);
+        if (!cur || cur > val) {
+          map.set(key, val);
+        }
+      }
+    }
+  }
+  console.log(map);
+  return (node, searchLen) => {
+    const len = map.get(node);
+    if (len === undefined) {
+      return true;
+    }
+    return searchLen <= len;
+  };
 }
 
 if (import.meta.vitest) {
