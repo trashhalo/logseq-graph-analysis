@@ -92,8 +92,10 @@
     const graph = (await graphP).copy();
     if (graphWas) {
       for (const node of graphWas.nodeEntries()) {
-        graph.updateNodeAttribute(node.node, "x", () => node.attributes.x);
-        graph.updateNodeAttribute(node.node, "y", () => node.attributes.y);
+        if (graph.hasNode(node.node)) {
+          graph.updateNodeAttribute(node.node, "x", () => node.attributes.x);
+          graph.updateNodeAttribute(node.node, "y", () => node.attributes.y);
+        }
       }
     }
     if (!filterEnabled || !search) {
