@@ -42,6 +42,10 @@
       defaultNodeColor: grey,
     });
     sigma.on("clickNode", handleNodeClick);
+    
+    if($settings.cameraState) {
+      sigma.getCamera().setState($settings.cameraState);
+    }
   });
 
   afterUpdate(() => {
@@ -65,6 +69,7 @@
       fa2Layout = undefined;
     }
     if (sigma) {
+      $settings.cameraState = sigma.getCamera().getState();
       sigma.kill();
       sigma = undefined;
     }
@@ -207,7 +212,6 @@
         (coCitationResults = await coCitation(
           sigma.getGraph(),
           pathA,
-          $settings.pathA!
         )))();
     } else {
       coCitationResults = undefined;

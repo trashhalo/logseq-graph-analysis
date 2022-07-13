@@ -1,6 +1,7 @@
 import { derived, Writable, writable } from "svelte/store";
 import { buildGraph } from "./graph";
 import type Graph from "graphology";
+import type { Camera } from "sigma";
 
 type SettingsSize = "in" | "out";
 export enum Mode {
@@ -21,6 +22,7 @@ interface Settings {
   bubbleSize: number;
   filter: boolean;
   filterLength: number;
+  cameraState?: ReturnType<Camera["getState"]>;
 }
 
 interface Store {
@@ -42,6 +44,11 @@ function createStore() {
       }));
     },
     reload: () => {
+      settings.update((settings) => {
+        settings.cameraState = undefined;
+        return settings;
+      })
+
       update((cur) => ({
         ...cur,
         graph: buildGraph(
