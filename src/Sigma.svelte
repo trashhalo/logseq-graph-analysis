@@ -21,6 +21,9 @@
   } from "./shortestPath";
   import { nodeNameIndex } from "./graph";
 
+  import CircleNodeProgram from "sigma/rendering/webgl/programs/node.fast";
+  import getNodeProgramImage from "sigma/rendering/webgl/programs/node.image";
+
   export let graph: Graph;
 
   let sigmaRef: HTMLElement;
@@ -40,6 +43,10 @@
       nodeReducer,
       edgeReducer,
       defaultNodeColor: grey,
+      nodeProgramClasses: {
+        circle: CircleNodeProgram,
+        image: getNodeProgramImage(),
+      }
     });
     sigma.on("clickNode", handleNodeClick);
     

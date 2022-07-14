@@ -11,6 +11,8 @@ export interface Page {
   properties?: {
     graphHide?: boolean;
     alias?: string[];
+    icon?: string;
+    pageIcon: string;
   };
 }
 

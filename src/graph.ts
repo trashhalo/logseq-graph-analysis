@@ -45,11 +45,23 @@ export async function buildGraph(
       continue;
     }
 
+    const icon = page.properties?.icon || page.properties?.pageIcon;
+
     g.addNode(page.id, {
+      ...(icon ? {
+        type: "image",
+        image: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='1.1em' x='0.2em' font-size='70'>${icon}</text></svg>` 
+      } : {
+        type: "circle"
+      }),
       label: page.name,
       aliases: pageToAliases(page, true),
       rawAliases: pageToAliases(page, false),
     });
+
+    if(icon) {
+      console.log(g.getNodeAttributes(page.id));
+    }
   }
 
   const results = await getBlockReferences();
