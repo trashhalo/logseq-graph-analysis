@@ -105,7 +105,7 @@ export function pagesToAliasMap(pages: Page[]): Map<number, number> {
   for (const page of pages) {
     if (page.properties && page.properties.alias) {
       const aliasedPages = page.properties.alias.map((a) =>
-        pages.find((p) => p.name === a)
+        pages.find((p) => p.name.toUpperCase() === a.toUpperCase())
       );
       for (const alias of aliasedPages) {
         if (alias) {
