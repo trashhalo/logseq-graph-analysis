@@ -1,24 +1,27 @@
 <script lang="ts">
   import type Graph from "graphology";
 
-  import { onMount } from "svelte";
+  import { afterUpdate, onMount } from "svelte";
   import { filter } from "./graph";
+  import Node from "./Node.svelte";
+  import Edge from "./Edge.svelte";
   import Settings from "./Settings.svelte";
   import Sigma from "./Sigma.svelte";
   import { uiVisible, store, graph, settings, Mode } from "./stores";
-
-  let cacheHit = false;
 
   onMount(async () => {
     // @ts-ignore
     logseq.on("ui:visible:changed", async ({ visible }) => {
       store.visible(visible);
+      if (visible) {
+        store.reload();
+      }
     });
+
     logseq.DB.onChanged(() => {
-      cacheHit = false;
-    });
-    logseq.onSettingsChanged(() => {
-      cacheHit = false;
+      if ($uiVisible) {
+        store.reload();
+      }
     });
   });
 
@@ -73,23 +76,17 @@
     }
   };
 
-  $: if ($uiVisible && !cacheHit) {
-    store.reload();
-    cacheHit = true;
-  }
-
   function handleCloseClick() {
     logseq.hideMainUI();
   }
 
   let graphWas: Graph | undefined;
-  async function filteredGraph(
-    graphP: Promise<Graph>,
+  function filteredGraph(
+    graph: Graph,
     filterEnabled: boolean,
     search: string | undefined,
     filterLength: number
-  ): Promise<Graph> {
-    const graph = (await graphP).copy();
+  ): Graph {
     if (graphWas) {
       for (const node of graphWas.nodeEntries()) {
         if (graph.hasNode(node.node)) {
@@ -117,20 +114,33 @@
 <svelte:window on:keydown={handleKeydown} on:keyup={handleKeyup} />
 
 <main>
-  {#if $uiVisible && $graph}
-    <div class="flex flex-row justify-end pr-2">
-      <button
-        class="h-8 w-8 p-1 opacity-50 flex justify-center items-center bg-white border-0 hover:opacity-100 hover:bg-slate-100 rounded"
-        on:click={handleCloseClick}
-      >
-        <div class="i-mdi-close text-slate-600" />
-      </button>
-    </div>
-    {#await filteredGraph($graph, $settings.filter, $settings.search, $settings.filterLength) then graph}
-      <Sigma on:nodeclick={handleNodeClick} {graph} />
-    {/await}
-    <Settings />
-  {/if}
+  <div class="flex flex-row justify-end pr-2">
+    <button
+      class="h-8 w-8 p-1 opacity-50 flex justify-center items-center bg-white border-0 hover:opacity-100 hover:bg-slate-100 rounded"
+      on:click={handleCloseClick}
+    >
+      <div class="i-mdi-close text-slate-600" />
+    </button>
+  </div>
+  <Sigma on:nodeclick={handleNodeClick} size={$graph.size}>
+    {@const graph = filteredGraph(
+      $graph,
+      $settings.filter,
+      $settings.search,
+      $settings.filterLength
+    )}
+    {#each graph.nodes() as node (node)}
+      <Node id={node} attributes={graph.getNodeAttributes(node)} />
+    {/each}
+    {#each graph.edges() as edge (edge)}
+      <Edge
+        source={graph.source(edge)}
+        target={graph.target(edge)}
+        attributes={graph.getEdgeAttributes(edge)}
+      />
+    {/each}
+  </Sigma>
+  <Settings />
 </main>
 
 <style>
