@@ -1,6 +1,6 @@
 import { derived, Writable, writable } from "svelte/store";
 import { buildGraph } from "./graph";
-import type Graph from "graphology";
+import Graph from "graphology";
 import type { Camera } from "sigma";
 
 type SettingsSize = "in" | "out";
@@ -27,12 +27,13 @@ interface Settings {
 
 interface Store {
   uiVisibile: boolean;
-  graph?: Promise<Graph>;
+  graph: Graph;
 }
 
 function createStore() {
   const { subscribe, update } = writable<Store>({
     uiVisibile: false,
+    graph: new Graph(),
   });
 
   return {
@@ -47,20 +48,21 @@ function createStore() {
       settings.update((settings) => {
         settings.cameraState = undefined;
         return settings;
-      })
-
-      update((cur) => ({
-        ...cur,
-        graph: buildGraph(
-          () => logseq.Editor.getAllPages(),
-          () =>
-            logseq.DB.datascriptQuery(
-              `[:find (pull ?b [*]) :in $ :where [?b :block/refs]]`
-            ),
-          () => ({ journal: logseq.settings?.journal === true }),
-          (ref) => logseq.Editor.getBlock(ref)
-        ),
-      }));
+      });
+      buildGraph(
+        () => logseq.Editor.getAllPages(),
+        () =>
+          logseq.DB.datascriptQuery(
+            `[:find (pull ?b [*]) :in $ :where [?b :block/refs]]`
+          ),
+        () => ({ journal: logseq.settings?.journal === true }),
+        (ref) => logseq.Editor.getBlock(ref)
+      ).then((graph) => {
+        update((cur) => ({
+          ...cur,
+          graph,
+        }));
+      });
     },
   };
 }

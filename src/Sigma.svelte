@@ -4,15 +4,16 @@
     onDestroy,
     createEventDispatcher,
     afterUpdate,
+    setContext,
   } from "svelte";
   import Sigma from "sigma";
   import FA2Layout from "graphology-layout-forceatlas2/worker";
   import forceAtlas2 from "graphology-layout-forceatlas2";
-  import type Graph from "graphology";
+  import Graph from "graphology";
   import type { SigmaNodeEventPayload } from "sigma/sigma";
   import type { Attributes } from "graphology-types";
   import type { EdgeDisplayData, NodeDisplayData } from "sigma/types";
-  import { Mode, settings } from "./stores";
+  import { Mode, settings, uiVisible } from "./stores";
   import { adamicAdar, coCitation, ResultMap } from "./analysis";
   import {
     shortestPathDirected,
@@ -24,11 +25,10 @@
   import CircleNodeProgram from "sigma/rendering/webgl/programs/node.fast";
   import getNodeProgramImage from "sigma/rendering/webgl/programs/node.image";
 
-  export let graph: Graph;
-
   let sigmaRef: HTMLElement;
   let sigma: Sigma | undefined;
   let fa2Layout: FA2Layout | undefined;
+  export let size: number;
 
   const dispatch = createEventDispatcher();
 
@@ -36,9 +36,13 @@
   const orange = "#fb923c";
   const grey = "#a3a3a3";
 
+  setContext("sigma", {
+    getGraph: () => sigma?.getGraph(),
+  });
+
   onMount(async () => {
-    const g = graph;
-    sigma = new Sigma(g, sigmaRef, {
+    const graph = new Graph();
+    sigma = new Sigma(graph, sigmaRef, {
       allowInvalidContainer: true,
       nodeReducer,
       edgeReducer,
@@ -46,28 +50,35 @@
       nodeProgramClasses: {
         circle: CircleNodeProgram,
         image: getNodeProgramImage(),
-      }
+      },
     });
+
     sigma.on("clickNode", handleNodeClick);
-    
-    if($settings.cameraState) {
+
+    if ($settings.cameraState) {
       sigma.getCamera().setState($settings.cameraState);
     }
   });
 
-  afterUpdate(() => {
-    if (sigma) {
-      sigma.refresh();
-      if (fa2Layout) {
-        fa2Layout.kill();
-      }
-      const sensibleSettings = forceAtlas2.inferSettings(graph);
-      sensibleSettings.gravity = $settings.gravity;
-      fa2Layout = new FA2Layout(graph, {
-        settings: sensibleSettings,
-      });
+  $: if (!$uiVisible) {
+    if (fa2Layout) {
+      fa2Layout.stop();
+    }
+  } else {
+    if (fa2Layout) {
       fa2Layout.start();
     }
+  }
+
+  afterUpdate(() => {
+    if (!sigma) return;
+    fa2Layout?.kill();
+    const settings = forceAtlas2.inferSettings(size);
+    fa2Layout = new FA2Layout(sigma.getGraph(), {
+      settings,
+    });
+    fa2Layout.start();
+    sigma.refresh();
   });
 
   onDestroy(async () => {
@@ -95,6 +106,7 @@
   };
 
   const nodeReducer = (node: string, data: Attributes) => {
+    const graph = sigma?.getGraph()!;
     const res: Partial<NodeDisplayData> = { ...data };
     if ($settings.size === "in") {
       res.size = maxSize(Math.max(2, graph.neighbors(node).length / 2), 16);
@@ -216,10 +228,7 @@
     const pathA = nodeIndex?.get($settings.pathA.toUpperCase());
     if (pathA) {
       (async () =>
-        (coCitationResults = await coCitation(
-          sigma.getGraph(),
-          pathA,
-        )))();
+        (coCitationResults = await coCitation(sigma.getGraph(), pathA)))();
     } else {
       coCitationResults = undefined;
     }
@@ -242,6 +251,7 @@
 </script>
 
 <div class="sigma" bind:this={sigmaRef} />
+<slot />
 
 <style>
   .sigma {
