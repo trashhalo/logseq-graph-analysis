@@ -48,20 +48,18 @@ export async function buildGraph(
     const icon = page.properties?.icon || page.properties?.pageIcon;
 
     g.addNode(page.id, {
-      ...(icon ? {
-        type: "image",
-        image: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='1.1em' x='0.2em' font-size='70'>${icon}</text></svg>` 
-      } : {
-        type: "circle"
-      }),
+      ...(icon
+        ? {
+            type: "image",
+            image: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='1.1em' x='0.2em' font-size='70'>${icon}</text></svg>`,
+          }
+        : {
+            type: "circle",
+          }),
       label: page.name,
       aliases: pageToAliases(page, true),
       rawAliases: pageToAliases(page, false),
     });
-
-    if(icon) {
-      console.log(g.getNodeAttributes(page.id));
-    }
   }
 
   const results = await getBlockReferences();
@@ -438,6 +436,32 @@ if (import.meta.vitest) {
             refs: [{ id: 2 }],
             "path-refs": [{ id: 3 }, { id: 2 }],
             page: { id: 3 },
+          },
+        ],
+      ];
+      const getSettings = () => ({ journal: false });
+      const getBlock = async (ref: BlockIdentity | EntityID) => null;
+      const graph = await buildGraph(
+        getAllPages,
+        getBlockReferences,
+        getSettings,
+        getBlock
+      );
+      expect(graphToJson(graph)).toMatchSnapshot();
+    });
+
+    it("links shared references in a block", async () => {
+      const getAllPages = async () => [
+        { id: 1, "journal?": false, name: "A" },
+        { id: 2, "journal?": false, name: "B" },
+        { id: 3, "journal?": false, name: "C" },
+      ];
+      const getBlockReferences = async () => [
+        [
+          {
+            refs: [{ id: 2 }, { id: 3 }],
+            "path-refs": [{ id: 1 }, { id: 2 }, { id: 3 }],
+            page: { id: 1 },
           },
         ],
       ];

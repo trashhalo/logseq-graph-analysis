@@ -189,6 +189,73 @@ exports[`buildGraph > links graphs to nested parents 1`] = `
 }
 `;
 
+exports[`buildGraph > links shared references in a block 1`] = `
+{
+  "attributes": {},
+  "edges": [
+    {
+      "attributes": {
+        "weight": 1,
+      },
+      "source": "1",
+      "target": "2",
+    },
+    {
+      "attributes": {
+        "weight": 1,
+      },
+      "source": "1",
+      "target": "3",
+    },
+    {
+      "attributes": {
+        "weight": 1,
+      },
+      "source": "2",
+      "target": "3",
+    },
+    {
+      "attributes": {
+        "weight": 1,
+      },
+      "source": "3",
+      "target": "2",
+    },
+  ],
+  "nodes": [
+    {
+      "attributes": {
+        "aliases": [],
+        "label": "A",
+        "rawAliases": [],
+        "type": "circle",
+      },
+    },
+    {
+      "attributes": {
+        "aliases": [],
+        "label": "B",
+        "rawAliases": [],
+        "type": "circle",
+      },
+    },
+    {
+      "attributes": {
+        "aliases": [],
+        "label": "C",
+        "rawAliases": [],
+        "type": "circle",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
+
 exports[`buildGraph > merges alias nodes 1`] = `
 {
   "attributes": {},
