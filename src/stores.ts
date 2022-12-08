@@ -23,6 +23,7 @@ interface Settings {
   filter: boolean;
   filterLength: number;
   cameraState?: ReturnType<Camera["getState"]>;
+  labelThreshold: number;
 }
 
 interface Store {
@@ -77,4 +78,5 @@ export const settings: Writable<Settings> = writable({
   bubbleSize: 5,
   filter: false,
   filterLength: 3,
+  labelThreshold: 1,
 });
