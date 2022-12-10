@@ -38,6 +38,16 @@
     <label for="filter">filter</label>
     <input type="checkbox" bind:checked={$settings.filter} />
   </div>
+  <div>
+    <label for="labelThreshold">label threshold</label>
+    <input
+      type="range"
+      min="0"
+      step="0.05"
+      max="10"
+      bind:value={$settings.labelThreshold}
+    />
+  </div>
   {#if $settings.filter}
     <div>
       <label for="nhops">n hops</label>
