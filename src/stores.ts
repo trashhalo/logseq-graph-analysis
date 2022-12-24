@@ -23,6 +23,8 @@ interface Settings {
   filter: boolean;
   filterLength: number;
   cameraState?: ReturnType<Camera["getState"]>;
+  labelThreshold: number;
+  nodesGravity: number;
 }
 
 interface Store {
@@ -38,6 +40,7 @@ function createStore() {
 
   return {
     subscribe,
+    update,
     visible: (visible: boolean) => {
       update((cur) => ({
         ...cur,
@@ -79,4 +82,6 @@ export const settings: Writable<Settings> = writable({
   bubbleSize: 5,
   filter: false,
   filterLength: 3,
+  labelThreshold: 1,
+  nodesGravity: 1,
 });

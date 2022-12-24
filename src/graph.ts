@@ -94,9 +94,12 @@ export async function buildGraph(
     })
   );
 
-  random.assign(g);
 
   console.log("graph complete", g.size);
+  if (!g.getAttribute("isInited")){
+    random.assign(g);
+    g.setAttribute("isInited", true);
+  }
 
   return g;
 }
@@ -454,3 +457,4 @@ if (import.meta.vitest) {
     });
   });
 }
+
