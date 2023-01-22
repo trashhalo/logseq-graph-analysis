@@ -9,6 +9,8 @@
   import Sigma from "sigma";
   import FA2Layout from "graphology-layout-forceatlas2/worker";
   import forceAtlas2 from "graphology-layout-forceatlas2";
+  import forceLayout from 'graphology-layout-force';
+  import ForceSupervisor from 'graphology-layout-force/worker';
   import Graph from "graphology";
   import type { SigmaNodeEventPayload } from "sigma/sigma";
   import type { Attributes } from "graphology-types";
@@ -72,11 +74,19 @@
 
   afterUpdate(() => {
     if (!sigma) return;
+    let defaultSettings = forceAtlas2.inferSettings(size);
     fa2Layout?.kill();
-    const settings = forceAtlas2.inferSettings(size);
-    fa2Layout = new FA2Layout(sigma.getGraph(), {
-      settings,
+    const graph = sigma.getGraph();
+    fa2Layout = new FA2Layout(graph, {
+      settings: {
+        gravity: $settings.gravity,
+        strongGravityMode: false,
+        scalingRatio: $settings.scalingRatio,
+        barnesHutOptimize: true,
+        barnesHutTheta: 0.2,
+      },
     });
+    console.log(fa2Layout.settings);
     fa2Layout.start();
     sigma.refresh();
   });

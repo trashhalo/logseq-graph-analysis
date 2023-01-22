@@ -25,6 +25,7 @@ interface Settings {
   cameraState?: ReturnType<Camera["getState"]>;
   labelThreshold: number;
   nodesGravity: number;
+  scalingRatio: number;
 }
 
 interface Store {
@@ -83,5 +84,6 @@ export const settings: Writable<Settings> = writable({
   filter: false,
   filterLength: 3,
   labelThreshold: 1,
-  nodesGravity: 1,
+  nodesGravity: 0.5,
+  scalingRatio: 0.0005
 });

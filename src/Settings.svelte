@@ -6,26 +6,8 @@
         $settings.pathA = undefined;
         $settings.pathB = undefined;
     }
+    console.log("settings", $settings.gravity);
 
-    console.log("script");
-    settings.subscribe((value) => {
-        if ($graph) {
-            console.log(graph);
-            console.log("Change gravity", $settings.gravity);
-            let positions = forceAtlas2($graph, {
-                iterations: 5,
-                settings: {
-                    gravity: $settings.gravity,
-                    edgeWeightInfluence: $settings.gravity,
-                },
-            });
-            console.log(store)
-            assignLayout($graph, positions);
-            store.update((cur) => {
-                return { ...cur, graph: $graph };
-            });
-        }
-    });
 </script>
 
 <div class="settings">
@@ -71,10 +53,20 @@
         <label for="gravity">nodes gravity</label>
         <input
             type="range"
-            min="0"
-            step="0.05"
-            max="10"
+            min="0.001"
+            step="0.001"
+            max="0.6"
             bind:value={$settings.gravity}
+        />
+    </div>
+    <div>
+        <label for="scalingRatio">Scaling ratio</label>
+        <input
+            type="range"
+            min="0.005"
+            step="0.001"
+            max="0.015"
+            bind:value={$settings.scalingRatio}
         />
     </div>
     {#if $settings.filter}
