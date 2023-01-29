@@ -78,14 +78,13 @@ export const graph = derived(store, (store) => store.graph);
 
 export const settings: Writable<Settings> = writable({
   size: "in",
-  gravity: 0.05,
   mode: Mode.Navigate,
   directed: true,
   bubbleSize: 5,
   filter: false,
   filterLength: 3,
   labelThreshold: 1,
-  nodesGravity: 0.5,
-  scalingRatio: 0.0005,
+  nodesGravity: 1,
+  scalingRatio: 1,
   edgeWeightInfluence: 0.5,
 });

@@ -6,7 +6,6 @@
         $settings.pathA = undefined;
         $settings.pathB = undefined;
     }
-    console.log("settings", $settings.gravity);
 
 </script>
 
@@ -32,14 +31,6 @@
         </div>
     {/if}
     <div>
-        <label for="search">search</label>
-        <input type="text" bind:value={$settings.search} />
-    </div>
-    <div>
-        <label for="filter">filter</label>
-        <input type="checkbox" bind:checked={$settings.filter} />
-    </div>
-    <div>
         <label for="labelThreshold">label threshold</label>
         <input
             type="range"
@@ -53,29 +44,29 @@
         <label for="gravity">nodes gravity</label>
         <input
             type="range"
-            min="0.001"
-            step="0.001"
-            max="0.6"
-            bind:value={$settings.gravity}
+            min="0.01"
+            step="0.01"
+            max="20"
+            bind:value={$settings.nodesGravity}
         />
     </div>
     <div>
         <label for="scalingRatio">Scaling ratio</label>
         <input
             type="range"
-            min="0.005"
-            step="0.001"
-            max="0.015"
+            min="0.001"
+            step="0.0001"
+            max="1.5"
             bind:value={$settings.scalingRatio}
         />
     </div>
     <div>
-        <label for="edgeWeightInfluence">Scaling ratio</label>
+        <label for="edgeWeightInfluence">Edge weight influence</label>
         <input
             type="range"
-            min="-1"
-            step="1"
-            max="1"
+            min="-2"
+            step="0.1"
+            max="2"
             bind:value={$settings.edgeWeightInfluence}
         />
     </div>

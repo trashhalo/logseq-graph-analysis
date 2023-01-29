@@ -79,15 +79,16 @@
     const graph = sigma.getGraph();
     fa2Layout = new FA2Layout(graph, {
       settings: {
-        gravity: $settings.gravity,
-        strongGravityMode: false,
-        scalingRatio: $settings.scalingRatio,
-        barnesHutOptimize: true,
+        ...defaultSettings,
+        gravity: $settings.nodesGravity * defaultSettings.gravity,
+        strongGravityMode: true,
+        scalingRatio: $settings.scalingRatio * defaultSettings.scalingRatio,
         barnesHutTheta: 0.2,
-        edgeWeightInfluence: $settings.edgeWeightInfluence
+        edgeWeightInfluence: $settings.edgeWeightInfluence * -1, // reverse fills more natural
+        slowDown: 100,
+
       },
     });
-    console.log(fa2Layout.settings);
     fa2Layout.start();
     sigma.refresh();
   });
