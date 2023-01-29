@@ -84,6 +84,7 @@
         scalingRatio: $settings.scalingRatio,
         barnesHutOptimize: true,
         barnesHutTheta: 0.2,
+        edgeWeightInfluence: $settings.edgeWeightInfluence
       },
     });
     console.log(fa2Layout.settings);

@@ -69,6 +69,16 @@
             bind:value={$settings.scalingRatio}
         />
     </div>
+    <div>
+        <label for="edgeWeightInfluence">Scaling ratio</label>
+        <input
+            type="range"
+            min="-1"
+            step="1"
+            max="1"
+            bind:value={$settings.edgeWeightInfluence}
+        />
+    </div>
     {#if $settings.filter}
         <div>
             <label for="nhops">n hops</label>

@@ -26,6 +26,7 @@ interface Settings {
   labelThreshold: number;
   nodesGravity: number;
   scalingRatio: number;
+  edgeWeightInfluence: number;
 }
 
 interface Store {
@@ -85,5 +86,6 @@ export const settings: Writable<Settings> = writable({
   filterLength: 3,
   labelThreshold: 1,
   nodesGravity: 0.5,
-  scalingRatio: 0.0005
+  scalingRatio: 0.0005,
+  edgeWeightInfluence: 0.5,
 });
