@@ -7,8 +7,7 @@
 
   function handleShortestPathRandom() {
     if ($graph) {
-      $graph.then((graph) => {
-        const nodes = graph.nodes().filter((node) => graph.degree(node));
+        const nodes = $graph.nodes().filter((node) => $graph.degree(node));
         const pathA = nodes[Math.floor(Math.random() * nodes.length)];
         let pathB;
         if (nodes.length < 2) {
@@ -19,12 +18,11 @@
           } while (pathA === pathB);
         }
         if (pathA) {
-          $settings.pathA = graph.getNodeAttribute(pathA, "label");
+          $settings.pathA = $graph.getNodeAttribute(pathA, "label");
         }
         if (pathB) {
-          $settings.pathB = graph.getNodeAttribute(pathB, "label");
+          $settings.pathB = $graph.getNodeAttribute(pathB, "label");
         }
-      });
     }
   }
 </script>

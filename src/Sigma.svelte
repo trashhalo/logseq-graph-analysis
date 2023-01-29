@@ -13,7 +13,7 @@
   import type { SigmaNodeEventPayload } from "sigma/sigma";
   import type { Attributes } from "graphology-types";
   import type { EdgeDisplayData, NodeDisplayData } from "sigma/types";
-  import { Mode, settings, uiVisible } from "./stores";
+  import { Mode, settings, uiVisible, graph } from "./stores";
   import { adamicAdar, coCitation, ResultMap } from "./analysis";
   import {
     shortestPathDirected,
@@ -189,8 +189,8 @@
   let nodeIndex: Map<string, string> | undefined;
   let coCitationResults: any;
 
-  $: if (sigma) {
-    nodeIndex = nodeNameIndex(sigma.getGraph());
+  $: if (sigma && ($settings.pathA || $settings.pathB || $settings.search)){
+    nodeIndex = nodeNameIndex($graph);
   }
 
   $: if (
