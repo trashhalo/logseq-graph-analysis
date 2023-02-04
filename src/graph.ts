@@ -455,6 +455,32 @@ if (import.meta.vitest) {
       );
       expect(graphToJson(graph)).toMatchSnapshot();
     });
+
+    it("links shared references in a block", async () => {
+      const getAllPages = async () => [
+        { id: 1, "journal?": false, name: "A" },
+        { id: 2, "journal?": false, name: "B" },
+        { id: 3, "journal?": false, name: "C" },
+      ];
+      const getBlockReferences = async () => [
+        [
+          {
+            refs: [{ id: 2 }, { id: 3 }],
+            "path-refs": [{ id: 1 }, { id: 2 }, { id: 3 }],
+            page: { id: 1 },
+          },
+        ],
+      ];
+      const getSettings = () => ({ journal: false });
+      const getBlock = async (ref: BlockIdentity | EntityID) => null;
+      const graph = await buildGraph(
+        getAllPages,
+        getBlockReferences,
+        getSettings,
+        getBlock
+      );
+      expect(graphToJson(graph)).toMatchSnapshot();
+    });
   });
 }
 

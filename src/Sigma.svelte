@@ -60,6 +60,9 @@
     if ($settings.cameraState) {
       sigma.getCamera().setState($settings.cameraState);
     }
+    let threshold = $settings.labelThreshold
+    sigma.setSetting("labelRenderedSizeThreshold", threshold)
+    
   });
 
   $: if (!$uiVisible) {

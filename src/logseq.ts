@@ -12,7 +12,7 @@ export interface Page {
     graphHide?: boolean;
     alias?: string[];
     icon?: string;
-    pageIcon: string;
+    pageIcon?: string;
   };
 }
 
@@ -62,10 +62,18 @@ export function blockToReferences(
   } else {
     source = block.page;
   }
-  return targets.map((target) => ({
+  const refs = targets.map((target) => ({
     source: source.id,
     target: target.id,
   }));
+  const sharedRefs = targets.flatMap((source, i) =>
+    [...targets.slice(0, i), ...targets.slice(i + 1)].map((target) => ({
+      source: source.id,
+      target: target.id,
+      undirected: true,
+    }))
+  );
+  return refs.concat(sharedRefs);
 }
 
 export async function refToPageRef(

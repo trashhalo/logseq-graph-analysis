@@ -16,7 +16,6 @@ interface Settings {
   search?: string;
   pathA?: string;
   pathB?: string;
-  gravity: number;
   mode: Mode;
   directed: boolean;
   bubbleSize: number;
