@@ -60,10 +60,12 @@
     if ($settings.cameraState) {
       sigma.getCamera().setState($settings.cameraState);
     }
-    let threshold = $settings.labelThreshold
-    sigma.setSetting("labelRenderedSizeThreshold", threshold)
-    
   });
+
+  $: if (sigma) {
+    console.log($settings.labelThreshold)
+    sigma.setSetting("labelRenderedSizeThreshold", $settings.labelThreshold);
+  }
 
   $: if (!$uiVisible) {
     if (fa2Layout) {
