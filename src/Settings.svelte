@@ -51,7 +51,7 @@
         />
     </div>
     <div>
-        <label for="scalingRatio">Scaling ratio</label>
+        <label for="scalingRatio">scaling ratio</label>
         <input
             type="range"
             min="0.001"
@@ -61,7 +61,7 @@
         />
     </div>
     <div>
-        <label for="edgeWeightInfluence">Edge weight influence</label>
+        <label for="edgeWeightInfluence">edge weight influence</label>
         <input
             type="range"
             min="-2"
