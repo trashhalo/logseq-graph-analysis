@@ -1,6 +1,6 @@
 {
   "name": "logseq-graph-analysis",
-  "version": "0.2.2",
+  "version": "0.9.0",
   "type": "module",
   "main": "./dist/index.html",
   "license": "GPL",
@@ -35,6 +35,7 @@
     "graphology": "^0.25.1",
     "graphology-layout": "^0.6.0",
     "graphology-layout-forceatlas2": "^0.10.1",
+    "graphology-layout-force": "0.2.4",
     "graphology-operators": "^1.5.1",
     "graphology-shortest-path": "^2.0.1",
     "sigma": "^2.3.1"
