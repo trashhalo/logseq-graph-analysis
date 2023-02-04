@@ -63,37 +63,43 @@ export async function buildGraph(
   }
 
   const results = await getBlockReferences();
-
-  for (const block of results.flat()) {
-    if (block.refs) {
-      for (const ref of blockToReferences(
-        getSettings().journal === true,
-        journals,
-        block
-      )) {
-        const targetRef = await refToPageRef(
-          getBlock,
-          aliases,
-          pages,
-          ref.target
-        );
-        if (targetRef && g.hasNode(ref.source) && g.hasNode(targetRef)) {
-          if (!g.hasEdge(ref.source, targetRef)) {
-            g.addEdge(ref.source, targetRef, { weight: 1 });
-          } else {
-            g.updateDirectedEdgeAttribute(
-              ref.source,
-              targetRef,
-              "weight",
-              (weight) => weight + 1
-            );
+  await Promise.all(
+    results.flat().map(async (block) => {
+      if (block.refs) {
+        for (const ref of blockToReferences(
+          getSettings().journal === true,
+          journals,
+          block
+        )) {
+          const targetRef = await refToPageRef(
+            getBlock,
+            aliases,
+            pages,
+            ref.target
+          );
+          if (targetRef && g.hasNode(ref.source) && g.hasNode(targetRef)) {
+            if (!g.hasEdge(ref.source, targetRef)) {
+              g.addEdge(ref.source, targetRef, { weight: 1 });
+            } else {
+              g.updateDirectedEdgeAttribute(
+                ref.source,
+                targetRef,
+                "weight",
+                (weight) => weight + 1
+              );
+            }
           }
         }
       }
-    }
-  }
+    })
+  );
 
-  random.assign(g);
+
+  console.log("graph complete", g.size);
+  if (!g.getAttribute("isInited")){
+    random.assign(g);
+    g.setAttribute("isInited", true);
+  }
 
   return g;
 }
@@ -477,3 +483,4 @@ if (import.meta.vitest) {
     });
   });
 }
+

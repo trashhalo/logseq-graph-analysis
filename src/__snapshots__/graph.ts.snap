@@ -2,7 +2,9 @@
 
 exports[`buildGraph > creates a graph with edges 1`] = `
 {
-  "attributes": {},
+  "attributes": {
+    "isInited": true,
+  },
   "edges": [
     {
       "attributes": {
@@ -40,7 +42,9 @@ exports[`buildGraph > creates a graph with edges 1`] = `
 
 exports[`buildGraph > does not shows journal pages when not requested 1`] = `
 {
-  "attributes": {},
+  "attributes": {
+    "isInited": true,
+  },
   "edges": [],
   "nodes": [
     {
@@ -62,7 +66,9 @@ exports[`buildGraph > does not shows journal pages when not requested 1`] = `
 
 exports[`buildGraph > handles block references 1`] = `
 {
-  "attributes": {},
+  "attributes": {
+    "isInited": true,
+  },
   "edges": [
     {
       "attributes": {
@@ -100,7 +106,9 @@ exports[`buildGraph > handles block references 1`] = `
 
 exports[`buildGraph > increases the weight for multiple edges 1`] = `
 {
-  "attributes": {},
+  "attributes": {
+    "isInited": true,
+  },
   "edges": [
     {
       "attributes": {
@@ -138,7 +146,9 @@ exports[`buildGraph > increases the weight for multiple edges 1`] = `
 
 exports[`buildGraph > links graphs to nested parents 1`] = `
 {
-  "attributes": {},
+  "attributes": {
+    "isInited": true,
+  },
   "edges": [
     {
       "attributes": {
@@ -191,7 +201,9 @@ exports[`buildGraph > links graphs to nested parents 1`] = `
 
 exports[`buildGraph > links shared references in a block 1`] = `
 {
-  "attributes": {},
+  "attributes": {
+    "isInited": true,
+  },
   "edges": [
     {
       "attributes": {
@@ -258,7 +270,9 @@ exports[`buildGraph > links shared references in a block 1`] = `
 
 exports[`buildGraph > merges alias nodes 1`] = `
 {
-  "attributes": {},
+  "attributes": {
+    "isInited": true,
+  },
   "edges": [
     {
       "attributes": {
@@ -300,7 +314,9 @@ exports[`buildGraph > merges alias nodes 1`] = `
 
 exports[`buildGraph > shows journal pages when requested 1`] = `
 {
-  "attributes": {},
+  "attributes": {
+    "isInited": true,
+  },
   "edges": [
     {
       "attributes": {
@@ -338,7 +354,9 @@ exports[`buildGraph > shows journal pages when requested 1`] = `
 
 exports[`buildGraph > skips pages with graph-hide: true 1`] = `
 {
-  "attributes": {},
+  "attributes": {
+    "isInited": true,
+  },
   "edges": [],
   "nodes": [
     {
@@ -360,7 +378,9 @@ exports[`buildGraph > skips pages with graph-hide: true 1`] = `
 
 exports[`buildGraph > skips references to journal pages 1`] = `
 {
-  "attributes": {},
+  "attributes": {
+    "isInited": true,
+  },
   "edges": [
     {
       "attributes": {
