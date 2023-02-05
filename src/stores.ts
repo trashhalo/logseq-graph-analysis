@@ -11,6 +11,14 @@ export enum Mode {
   CoCitation = "CoCitation",
 }
 
+export type NodeFilter = {
+  id: number,
+  searchString: string,
+  searchType: string,
+  searchColor: string
+  foundNodeIds: String[]
+}
+
 interface Settings {
   size: SettingsSize;
   search?: string;
@@ -26,6 +34,7 @@ interface Settings {
   nodesGravity: number;
   scalingRatio: number;
   edgeWeightInfluence: number;
+  filters: NodeFilter[];
 }
 
 interface Store {
@@ -82,8 +91,9 @@ export const settings: Writable<Settings> = writable({
   bubbleSize: 5,
   filter: false,
   filterLength: 3,
-  labelThreshold: 1,
+  labelThreshold: 100,
   nodesGravity: 1,
   scalingRatio: 1,
   edgeWeightInfluence: 0.5,
+  filters: logseq.settings?.filters || [],
 });

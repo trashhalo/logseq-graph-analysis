@@ -9,8 +9,8 @@
   import Sigma from "sigma";
   import FA2Layout from "graphology-layout-forceatlas2/worker";
   import forceAtlas2 from "graphology-layout-forceatlas2";
-  import forceLayout from 'graphology-layout-force';
-  import ForceSupervisor from 'graphology-layout-force/worker';
+  import forceLayout from "graphology-layout-force";
+  import ForceSupervisor from "graphology-layout-force/worker";
   import Graph from "graphology";
   import type { SigmaNodeEventPayload } from "sigma/sigma";
   import type { Attributes } from "graphology-types";
@@ -23,6 +23,7 @@
     shortestPathEdgePredicate,
   } from "./shortestPath";
   import { nodeNameIndex } from "./graph";
+  import { findNodes } from "./settings/helpers/search";
 
   import CircleNodeProgram from "sigma/rendering/webgl/programs/node.fast";
   import getNodeProgramImage from "sigma/rendering/webgl/programs/node.image";
@@ -63,7 +64,6 @@
   });
 
   $: if (sigma) {
-    console.log($settings.labelThreshold)
     sigma.setSetting("labelRenderedSizeThreshold", $settings.labelThreshold);
   }
 
@@ -91,7 +91,6 @@
         barnesHutTheta: 0.2,
         edgeWeightInfluence: $settings.edgeWeightInfluence * -1, // reverse fills more natural
         slowDown: 100,
-
       },
     });
     fa2Layout.start();
@@ -129,21 +128,6 @@
       res.size = maxSize(Math.max(2, graph.neighbors(node).length / 2), 16);
     } else if ($settings.size === "out") {
       res.size = maxSize(graph.inDegree(node), 16);
-    }
-
-    const label = res.label?.toUpperCase();
-    const search = $settings.search?.toUpperCase();
-
-    if (
-      !$settings.filter &&
-      search &&
-      label &&
-      (label.includes(search) ||
-        data["aliases"]?.find((a: string) => a.includes(search)))
-    ) {
-      res.color = orange;
-      res.size = (res.size ?? data.size) + 2;
-      res.highlighted = true;
     }
 
     if ($settings.mode === Mode.ShortestPath) {
@@ -205,8 +189,49 @@
   let adamicAdarResults: ResultMap | undefined;
   let nodeIndex: Map<string, string> | undefined;
   let coCitationResults: any;
+  let foundNodeIds: Array<string> = [];
 
-  $: if (sigma && ($settings.pathA || $settings.pathB || $settings.search)){
+  $: if (sigma) {
+    findNodes($settings.search, sigma.getGraph()).then((res) => {
+      foundNodeIds = res;
+    });
+  }
+
+  // update style on change settings
+  $: {
+    if (sigma) {
+      const graph = sigma.getGraph();
+      graph.forEachNode((node) => {
+        graph.updateEachNodeAttributes((node, data: Attributes) => {
+          data.color = grey;
+          data.hidden = false;
+
+          return data;
+        });
+      });
+      $settings.filters.forEach((filter) => {
+        graph.updateEachNodeAttributes((node, attr: Attributes) => {
+          attr.highlighted = false;
+          attr.size = (attr.size ?? attr.size) + 2;
+          if (foundNodeIds?.includes(node)) {
+            attr.color = orange;
+            attr.highlighted = true;
+            attr.size = (attr.size ?? attr.size) + 2;
+            return attr;
+          } else if (
+            filter.searchType === "color" &&
+            filter.foundNodeIds?.includes(node)
+          ) {
+            attr.color = filter.searchColor;
+            return attr;
+          } 
+          return attr;
+        });
+      });
+    }
+  }
+
+  $: if (sigma && ($settings.pathA || $settings.pathB || $settings.search)) {
     nodeIndex = nodeNameIndex($graph);
   }
 

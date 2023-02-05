@@ -3,6 +3,11 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "baseUrl": "./src",
+    "rootDir": "./src",
+    "paths": {
+      "@/": ["./src"]
+    },
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": false,

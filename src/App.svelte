@@ -5,9 +5,9 @@
   import { filter } from "./graph";
   import Node from "./Node.svelte";
   import Edge from "./Edge.svelte";
-  import Settings from "./Settings.svelte";
+  import Settings from "./settings/Settings.svelte";
   import Sigma from "./Sigma.svelte";
-  import { uiVisible, store, graph, settings, Mode } from "./stores";
+  import { uiVisible, store, graph, settings, Mode, NodeFilter } from "./stores";
 
   onMount(async () => {
     // @ts-ignore
@@ -17,6 +17,22 @@
         store.reload();
       }
     });
+    if (logseq.settings) {
+      if (logseq.settings.filters){
+        let filters: NodeFilter[] = logseq.settings.filters;
+        // reset ids to be sequential
+        filters.forEach((el, index) => {
+          el.id = index;
+          return el;
+        });
+
+        $settings.filters = filters
+      } else {
+        $settings.filters = [];
+      }
+
+    }
+
 
     logseq.DB.onChanged(() => {
       if ($uiVisible) {
@@ -26,9 +42,30 @@
   });
 
   let metaDown = false;
+  $: {
+    if (logseq.settings) {
+      if (logseq.settings.filters){
+        let filters: Array<NodeFilter> = $settings.filters;
+        const seen = new Set();
+        filters = filters.filter(el => {
+          if (el.id === undefined) {
+            return false;
+          }
+          const duplicate = seen.has(el.id);
+          seen.add(el.id);
+          return !duplicate;
+        });
+        // Doesn't updates without reset if you delete items from list
+        logseq.updateSettings({filters: null});
+        logseq.updateSettings({filters: filters});
+      } else {
+        logseq.updateSettings({filters: []});
+      }
+
+    }
+  }
 
   const handleKeydown = (event: KeyboardEvent) => {
-    console.log("down", event);
     if (event.key == "Escape") {
       logseq.hideMainUI();
     } else if (event.key === "Meta") {
@@ -36,7 +73,6 @@
     }
   };
   const handleKeyup = (event: KeyboardEvent) => {
-    console.log("up", event);
     if (event.key === "Meta") {
       metaDown = false;
     }
