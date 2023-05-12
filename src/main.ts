@@ -5,6 +5,7 @@ import App from "./App.svelte";
 import type * as CSS from "csstype";
 import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.user";
 
+
 const settingsSchema: SettingSchemaDesc[] = [
   {
     key: "journal",
@@ -12,6 +13,13 @@ const settingsSchema: SettingSchemaDesc[] = [
     title: "Show journal pages on graph",
     description: "Do you want to show journal pages on your graph?",
     default: false,
+  },
+  {
+    key: "filters",
+    type: "object",
+    title: "Graph settings and filters",
+    description: "Graph settings and filters",
+    default: []
   },
 ];
 
