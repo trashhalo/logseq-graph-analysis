@@ -7,7 +7,14 @@
   import Edge from "./Edge.svelte";
   import Settings from "./settings/Settings.svelte";
   import Sigma from "./Sigma.svelte";
-  import { uiVisible, store, graph, settings, Mode, NodeFilter } from "./stores";
+  import {
+    uiVisible,
+    store,
+    graph,
+    settings,
+    Mode,
+    NodeFilter,
+  } from "./stores";
 
   onMount(async () => {
     // @ts-ignore
@@ -18,7 +25,7 @@
       }
     });
     if (logseq.settings) {
-      if (logseq.settings.filters){
+      if (logseq.settings.filters) {
         let filters: NodeFilter[] = logseq.settings.filters;
         // reset ids to be sequential
         filters.forEach((el, index) => {
@@ -26,13 +33,11 @@
           return el;
         });
 
-        $settings.filters = filters
+        $settings.filters = filters;
       } else {
         $settings.filters = [];
       }
-
     }
-
 
     logseq.DB.onChanged(() => {
       if ($uiVisible) {
@@ -44,10 +49,10 @@
   let metaDown = false;
   $: {
     if (logseq.settings) {
-      if (logseq.settings.filters){
+      if (logseq.settings.filters) {
         let filters: Array<NodeFilter> = $settings.filters;
         const seen = new Set();
-        filters = filters.filter(el => {
+        filters = filters.filter((el) => {
           if (el.id === undefined) {
             return false;
           }
@@ -56,12 +61,11 @@
           return !duplicate;
         });
         // Doesn't updates without reset if you delete items from list
-        logseq.updateSettings({filters: null});
-        logseq.updateSettings({filters: filters});
+        logseq.updateSettings({ filters: null });
+        logseq.updateSettings({ filters: filters });
       } else {
-        logseq.updateSettings({filters: []});
+        logseq.updateSettings({ filters: [] });
       }
-
     }
   }
 
@@ -116,33 +120,25 @@
     logseq.hideMainUI();
   }
 
-  let graphWas: Graph | undefined;
   function filteredGraph(
     graph: Graph,
     filterEnabled: boolean,
     search: string | undefined,
     filterLength: number
   ): Graph {
-    if (graphWas) {
-      for (const node of graphWas.nodeEntries()) {
-        if (graph.hasNode(node.node)) {
-          graph.updateNodeAttribute(node.node, "x", () => node.attributes.x);
-          graph.updateNodeAttribute(node.node, "y", () => node.attributes.y);
-        }
-      }
-    }
+    graph.forEachNode((node) => {
+      graph.setNodeAttribute(node, "hidden", false);
+    });
     if (!filterEnabled || !search) {
-      graphWas = graph;
       return graph;
     }
 
     const filterFn = filter(graph, search);
-    for (const node of graph.nodes()) {
+    graph.forEachNode((node) => {
       if (filterFn(node, filterLength)) {
-        graph.dropNode(node);
+        graph.setNodeAttribute(node, "hidden", true);
       }
-    }
-    graphWas = graph;
+    });
     return graph;
   }
 </script>

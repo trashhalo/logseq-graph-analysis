@@ -204,7 +204,6 @@
       graph.forEachNode((node) => {
         graph.updateEachNodeAttributes((node, data: Attributes) => {
           data.color = grey;
-          data.hidden = false;
 
           return data;
         });
@@ -224,7 +223,7 @@
           ) {
             attr.color = filter.searchColor;
             return attr;
-          } 
+          }
           return attr;
         });
       });
@@ -241,7 +240,14 @@
     $settings.pathA &&
     $settings.pathB
   ) {
-    const graph = sigma.getGraph();
+    $settings.filterLength;
+    // paht finding algorithm is not working with hidden nodes
+    const graph = sigma.getGraph().copy();
+    graph.forEachNode((node, attrs) => {
+      if (attrs.hidden) {
+        graph.dropNode(node);
+      }
+    });
     const results = $settings.directed
       ? shortestPathDirected(graph, $settings.pathA, $settings.pathB)
       : shortestPathUndirected(graph, $settings.pathB, $settings.pathA);
