@@ -32,7 +32,7 @@ export function shortestPathUndirected(
 ) {
   const pathA = findNode(graph, pathAStr);
   const pathB = findNode(graph, pathBStr);
-  if (!pathA && !pathB) {
+  if (!pathA || !pathB) {
     return { nodes: undefined, edges: undefined } as const;
   }
 
