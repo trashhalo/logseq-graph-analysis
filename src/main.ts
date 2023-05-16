@@ -39,8 +39,8 @@ async function main() {
   });
 
 
-  let background;
-  let color;
+  let background:string = "unset";
+  let color:string ="unset";
   const rootThemeColor = () => {
     const root = parent.document.querySelector(":root");
     if (root) {
@@ -50,7 +50,14 @@ async function main() {
     }
   };
   rootThemeColor();
-  logseq.App.onThemeModeChanged(() => { rootThemeColor();document.getElementById("app").style.background = background;document.getElementById("app").style.color = color; });
+  logseq.App.onThemeModeChanged(() => { 
+    rootThemeColor();
+    const baseStyles: CSS.Properties = {
+      background,
+      color,
+    };
+    logseq.setMainUIInlineStyle(baseStyles);
+  });
 
   const baseStyles: CSS.Properties = {
     position: "fixed",
