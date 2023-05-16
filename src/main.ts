@@ -35,7 +35,28 @@ function createModel() {
 
 async function main() {
   const app = new App({
-    target: document.getElementById("app"),
+    target: document.getElementById("app") as Element,
+  });
+
+
+  let background:string = "unset";
+  let color:string ="unset";
+  const rootThemeColor = () => {
+    const root = parent.document.querySelector(":root");
+    if (root) {
+      const rootStyles = getComputedStyle(root);
+      background = rootStyles.getPropertyValue("--ls-primary-background-color") || "#ffffff";
+      color = rootStyles.getPropertyValue("--ls-primary-text-color") || "#000000";
+    }
+  };
+  rootThemeColor();
+  logseq.App.onThemeModeChanged(() => { 
+    rootThemeColor();
+    const baseStyles: CSS.Properties = {
+      background,
+      color,
+    };
+    logseq.setMainUIInlineStyle(baseStyles);
   });
 
   const baseStyles: CSS.Properties = {
@@ -43,6 +64,8 @@ async function main() {
     zIndex: 12,
     height: "calc(100vh - 8px)",
     top: "8px",
+    background,
+    color,
   };
 
   logseq.setMainUIInlineStyle(baseStyles);
