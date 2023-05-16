@@ -216,7 +216,6 @@
     bottom: 0;
     left: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background: white;
     width: 100%;
     height: 100%;
   }
