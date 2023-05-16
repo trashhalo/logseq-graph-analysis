@@ -50,7 +50,7 @@ async function main() {
     }
   };
   rootThemeColor();
-  logseq.App.onThemeModeChanged(() => { rootThemeColor(); });
+  logseq.App.onThemeModeChanged(() => { rootThemeColor();document.getElementById("app").style.background = background;document.getElementById("app").style.color = color; });
 
   const baseStyles: CSS.Properties = {
     position: "fixed",
