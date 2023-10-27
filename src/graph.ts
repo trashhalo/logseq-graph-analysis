@@ -50,12 +50,12 @@ export async function buildGraph(
     g.addNode(page.id, {
       ...(icon
         ? {
-            type: "image",
-            image: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='1.1em' x='0.2em' font-size='70'>${icon}</text></svg>`,
-          }
+          type: "image",
+          image: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='1.1em' x='0.2em' font-size='70'>${icon}</text></svg>`,
+        }
         : {
-            type: "circle",
-          }),
+          type: "circle",
+        }),
       label: page.name,
       aliases: pageToAliases(page, true),
       rawAliases: pageToAliases(page, false),
@@ -96,7 +96,7 @@ export async function buildGraph(
 
 
   console.log("graph complete", g.size);
-  if (!g.getAttribute("isInited")){
+  if (!g.getAttribute("isInited")) {
     random.assign(g);
     g.setAttribute("isInited", true);
   }
@@ -108,7 +108,7 @@ export function pagesToAliasMap(pages: Page[]): Map<number, number> {
   const aliases = new Map<number, number>();
   for (const page of pages) {
     if (page.properties && page.properties.alias) {
-      const aliasedPages = page.properties.alias.map((a) =>
+      const aliasedPages = normalizeAlias(page).map((a) =>
         pages.find((p) => p.name.toUpperCase() === a.toUpperCase())
       );
       for (const alias of aliasedPages) {
@@ -121,6 +121,20 @@ export function pagesToAliasMap(pages: Page[]): Map<number, number> {
   return aliases;
 }
 
+function normalizeAlias(input: Page): string[] {
+  if (!input.properties?.alias) {
+    return [];
+  }
+  if (input.properties.alias === '') {
+    return [];
+  }  else if (typeof input.properties.alias === "string") {
+    return [input.properties.alias];
+  }
+  else {
+    return input.properties.alias;
+  }
+}
+
 export function removeAliases(
   aliases: Map<number, number>,
   pages: Page[]
@@ -129,8 +143,10 @@ export function removeAliases(
 }
 
 export function pageToAliases(page: Page, upper: boolean): string[] {
-  return (page.properties?.alias ?? []).map((a) =>
-    upper ? a.toUpperCase() : a
+  console.log(normalizeAlias(page));
+  return (normalizeAlias(page)).map((a) =>{
+    return upper ? a.toUpperCase() : a
+  }
   );
 }
 
@@ -444,6 +460,25 @@ if (import.meta.vitest) {
             page: { id: 3 },
           },
         ],
+      ];
+      const getSettings = () => ({ journal: false });
+      const getBlock = async (ref: BlockIdentity | EntityID) => null;
+      const graph = await buildGraph(
+        getAllPages,
+        getBlockReferences,
+        getSettings,
+        getBlock
+      );
+      expect(graphToJson(graph)).toMatchSnapshot();
+    });
+    it("alias nodes empty cases shoud not fail", async () => {
+      const getAllPages = async () => [
+        { id: 1, "journal?": false, name: "A", properties: { alias: "" } },
+        { id: 2, "journal?": false, name: "B", properties: { alias: ["test"] } },
+        { id: 3, "journal?": false, name: "C" },
+      ];
+      const getBlockReferences = async () => [
+        [],
       ];
       const getSettings = () => ({ journal: false });
       const getBlock = async (ref: BlockIdentity | EntityID) => null;

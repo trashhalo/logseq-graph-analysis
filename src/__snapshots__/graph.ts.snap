@@ -1,5 +1,49 @@
 // Vitest Snapshot v1
 
+exports[`buildGraph > alias nodes empty cases shoud not fail 1`] = `
+{
+  "attributes": {
+    "isInited": true,
+  },
+  "edges": [],
+  "nodes": [
+    {
+      "attributes": {
+        "aliases": [],
+        "label": "A",
+        "rawAliases": [],
+        "type": "circle",
+      },
+    },
+    {
+      "attributes": {
+        "aliases": [
+          "TEST",
+        ],
+        "label": "B",
+        "rawAliases": [
+          "test",
+        ],
+        "type": "circle",
+      },
+    },
+    {
+      "attributes": {
+        "aliases": [],
+        "label": "C",
+        "rawAliases": [],
+        "type": "circle",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
+
 exports[`buildGraph > creates a graph with edges 1`] = `
 {
   "attributes": {

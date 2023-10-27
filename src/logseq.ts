@@ -10,7 +10,7 @@ export interface Page {
   name: string;
   properties?: {
     graphHide?: boolean;
-    alias?: string[];
+    alias?: string[] | string;
     icon?: string;
     pageIcon?: string;
   };
