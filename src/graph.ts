@@ -143,7 +143,6 @@ export function removeAliases(
 }
 
 export function pageToAliases(page: Page, upper: boolean): string[] {
-  console.log(normalizeAlias(page));
   return (normalizeAlias(page)).map((a) =>{
     return upper ? a.toUpperCase() : a
   }
