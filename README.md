@@ -24,6 +24,7 @@ Learn more about the relationships between between your notes using network anal
 
 ## Search and filters
 
+https://github.com/trashhalo/logseq-graph-analysis/assets/19637629/6094b35c-2e0c-4026-8256-12c6329795d7
 
 You can use Search to highlight page on grapg by title. `filter ` checkbox will keep only found pages + n neighbours
 
