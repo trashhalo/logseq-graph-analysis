@@ -47,6 +47,7 @@
   });
 
   let metaDown = false;
+  let shiftDown = false;
   $: {
     if (logseq.settings) {
       if (logseq.settings.filters) {
@@ -75,15 +76,27 @@
     } else if (event.key === "Meta") {
       metaDown = true;
     }
+    if (event.key === "Shift") {
+      shiftDown = true;
+    }
   };
   const handleKeyup = (event: KeyboardEvent) => {
     if (event.key === "Meta") {
       metaDown = false;
     }
+    if (event.key === "Shift") {
+      shiftDown = false;
+    }
   };
 
   const handleNodeClick = async (event: CustomEvent<string>) => {
-    console.log("nodeclicked", event, metaDown);
+    console.log("nodeclicked", event, metaDown, shiftDown);
+    if (shiftDown) {
+      const page = await logseq.Editor.getPage(+event.detail);
+      if (page) {
+        logseq.Editor.openInRightSidebar(page.uuid);
+      }
+    } else
     if ($settings.mode === Mode.Navigate || metaDown) {
       const page = await logseq.Editor.getPage(+event.detail);
       if (page) {
