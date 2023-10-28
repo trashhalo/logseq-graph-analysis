@@ -24,7 +24,6 @@ Learn more about the relationships between between your notes using network anal
 
 ## Search and filters
 
-![filters](./public/filters.mp4)
 
 You can use Search to highlight page on grapg by title. `filter ` checkbox will keep only found pages + n neighbours
 
