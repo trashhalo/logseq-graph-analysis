@@ -120,6 +120,23 @@
     logseq.hideMainUI();
   }
 
+  let graphWas: Graph | undefined;
+
+  function saveNodesPositions(graph: Graph): Graph {
+    // save nodes positions to keep it same when you close and open ui
+    if (graphWas) {
+      for (const node of graphWas.nodeEntries()) {
+        if (graph.hasNode(node.node)) {
+          graph.updateNodeAttribute(node.node, "x", () => node.attributes.x);
+          graph.updateNodeAttribute(node.node, "y", () => node.attributes.y);
+        }
+      }
+    }
+    graphWas = graph;
+    return graph;
+
+  }
+
   function filteredGraph(
     graph: Graph,
     filterEnabled: boolean,
@@ -130,7 +147,7 @@
       graph.setNodeAttribute(node, "hidden", false);
     });
     if (!filterEnabled || !search) {
-      return graph;
+      return saveNodesPositions(graph);
     }
 
     const filterFn = filter(graph, search);
@@ -139,7 +156,7 @@
         graph.setNodeAttribute(node, "hidden", true);
       }
     });
-    return graph;
+    return saveNodesPositions(graph);
   }
 </script>
 
