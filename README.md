@@ -14,7 +14,7 @@ Learn more about the relationships between between your notes using network anal
 
 - Click the graph icon to go into `graph analysis` mode.
 - There are 3 modes to play with
-  - Navigate - Clicking a node will open it in logseq to edit
+  - Navigate - Clicking a node will open it in logseq to edit.
   - Shortest Path - Find the shortest path between 2 notes. Click a note to select it.
   - Adamic Adar - Find secret connections between your notes. Click a note to learn which notes the algorithm thinks are linked
   - CoCitation - Checks how alike documents are by looking at how close their shared references are
