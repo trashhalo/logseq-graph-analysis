@@ -4,6 +4,7 @@ import "@unocss/reset/normalize.css";
 import App from "./App.svelte";
 import type * as CSS from "csstype";
 import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.user";
+import {setThemeColors} from "./settings/themes";
 
 
 const settingsSchema: SettingSchemaDesc[] = [
@@ -39,33 +40,15 @@ async function main() {
   });
 
 
-  let background:string = "unset";
-  let color:string ="unset";
-  const rootThemeColor = () => {
-    const root = parent.document.querySelector(":root");
-    if (root) {
-      const rootStyles = getComputedStyle(root);
-      background = rootStyles.getPropertyValue("--ls-primary-background-color") || "#ffffff";
-      color = rootStyles.getPropertyValue("--ls-primary-text-color") || "#000000";
-    }
-  };
-  rootThemeColor();
-  logseq.App.onThemeModeChanged(() => { 
-    rootThemeColor();
-    const baseStyles: CSS.Properties = {
-      background,
-      color,
-    };
-    logseq.setMainUIInlineStyle(baseStyles);
-  });
+  setThemeColors();
 
   const baseStyles: CSS.Properties = {
     position: "fixed",
     zIndex: 12,
     height: "calc(100vh - 8px)",
     top: "8px",
-    background,
-    color,
+    background: "var(--ls-primary-background-color)",
+    color: "var(--ls-primary-text-color)",
   };
 
   logseq.setMainUIInlineStyle(baseStyles);

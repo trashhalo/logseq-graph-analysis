@@ -6,11 +6,8 @@
     afterUpdate,
     setContext,
   } from "svelte";
-  import Sigma from "sigma";
   import FA2Layout from "graphology-layout-forceatlas2/worker";
   import forceAtlas2 from "graphology-layout-forceatlas2";
-  import forceLayout from "graphology-layout-force";
-  import ForceSupervisor from "graphology-layout-force/worker";
   import Graph from "graphology";
   import type { SigmaNodeEventPayload } from "sigma/sigma";
   import type { Attributes } from "graphology-types";
@@ -27,9 +24,12 @@
 
   import CircleNodeProgram from "sigma/rendering/webgl/programs/node.fast";
   import getNodeProgramImage from "sigma/rendering/webgl/programs/node.image";
+  import { getTheme } from "./settings/themes";
+  import drawHover from "./sigma/drawHover";
+  import { ExtendedSigma } from "./sigma/sigma";
 
   let sigmaRef: HTMLElement;
-  let sigma: Sigma | undefined;
+  let sigma: ExtendedSigma | undefined;
   let fa2Layout: FA2Layout | undefined;
   export let size: number;
 
@@ -37,7 +37,6 @@
 
   const red = "#f87171";
   const orange = "#fb923c";
-  const grey = "#a3a3a3";
 
   setContext("sigma", {
     getGraph: () => sigma?.getGraph(),
@@ -45,15 +44,23 @@
 
   onMount(async () => {
     const graph = new Graph();
-    sigma = new Sigma(graph, sigmaRef, {
+    const theme = getTheme($settings.themeMode);
+    sigma = new ExtendedSigma(graph, sigmaRef, {
       allowInvalidContainer: true,
       nodeReducer,
       edgeReducer,
-      defaultNodeColor: grey,
+      defaultNodeColor: theme.nodeColor,
+      defaultEdgeColor: theme.edgeColor,
+      labelColor: {
+        color: theme.nodeLabelColor,
+      },
+      labelBackgroundColor: theme.nodeLabelBackground,
+      labelShadowColor: theme.nodeLabelShadowColor,
       nodeProgramClasses: {
         circle: CircleNodeProgram,
         image: getNodeProgramImage(),
       },
+      hoverRenderer: drawHover,
     });
 
     sigma.on("clickNode", handleNodeClick);
@@ -200,14 +207,13 @@
   // update style on change settings
   $: {
     if (sigma) {
+      const theme = getTheme($settings.themeMode);
       const graph = sigma.getGraph();
-      graph.forEachNode((node) => {
-        graph.updateEachNodeAttributes((node, data: Attributes) => {
-          data.color = grey;
-
-          return data;
-        });
-      });
+      sigma.setSetting("defaultEdgeColor", theme.edgeColor);
+      sigma.setSetting("defaultNodeColor", theme.nodeColor);
+      sigma.setSetting("labelColor", { color: theme.nodeLabelColor });
+      sigma.setSetting("labelBackgroundColor", theme.nodeLabelBackground);
+      sigma.setSetting("labelShadowColor", theme.nodeLabelShadowColor);
       $settings.filters.forEach((filter) => {
         graph.updateEachNodeAttributes((node, attr: Attributes) => {
           attr.highlighted = false;

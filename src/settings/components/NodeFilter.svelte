@@ -95,13 +95,13 @@
   input[type=search] {
     tab-size: 4;
     word-break: break-word;
-    border: 0 solid #e5e5e5;
+    border: 0 solid var(--theme-border-color);
     box-sizing: border-box;
     color: inherit;
     margin: 0;
     font: inherit;
     appearance: none;
-    background-color: #fff;
+    background-color: var(--theme-background-color);
     padding: .5rem .75rem;
     border-radius: .25rem;
     padding-left: .5rem;
