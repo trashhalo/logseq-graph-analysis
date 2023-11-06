@@ -22,6 +22,14 @@
       setThemeColors();
       $settings.themeMode = event.mode;
     });
+    logseq.App.onThemeChanged((event) => {
+      setThemeColors();
+      if (event.mode === "dark") {
+        $settings.themeMode = "dark";
+      } else {
+        $settings.themeMode = "light";
+      }
+    });
 
     // @ts-ignore
     logseq.on("ui:visible:changed", async ({ visible }) => {
