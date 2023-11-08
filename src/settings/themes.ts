@@ -10,7 +10,7 @@ interface Theme {
 
 const lightTheme: Theme = {
   mode: "light",
-  nodeColor: "#a3a3a3",
+  nodeColor: "#5c5c5c",
   edgeColor: "#e5e5e5",
   nodeLabelColor: "#000000",
   nodeLabelBackground: "#ffffff",
@@ -19,8 +19,8 @@ const lightTheme: Theme = {
 
 const darkTheme: Theme = {
   mode: "dark",
-  nodeColor: "#a3a3a3",
-  edgeColor: "#666666",
+  nodeColor: "#aaaaaa",
+  edgeColor: "#444444",
   nodeLabelColor: "#ffffff",
   nodeLabelBackground: "rgb(0, 0, 0, 0.7)",
   nodeLabelShadowColor: "#ffffff",

@@ -209,6 +209,8 @@
     if (sigma) {
       const theme = getTheme($settings.themeMode);
       const graph = sigma.getGraph();
+      sigma.setSetting("defaultEdgeColor", theme.edgeColor);
+      sigma.setSetting("defaultNodeColor", theme.nodeColor);
       sigma.setSetting("labelColor", { color: theme.nodeLabelColor });
       sigma.setSetting("labelBackgroundColor", theme.nodeLabelBackground);
       sigma.setSetting("labelShadowColor", theme.nodeLabelShadowColor);
