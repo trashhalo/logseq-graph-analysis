@@ -209,21 +209,18 @@
     if (sigma) {
       const theme = getTheme($settings.themeMode);
       const graph = sigma.getGraph();
-      sigma.setSetting("defaultEdgeColor", theme.edgeColor);
-      sigma.setSetting("defaultNodeColor", theme.nodeColor);
       sigma.setSetting("labelColor", { color: theme.nodeLabelColor });
       sigma.setSetting("labelBackgroundColor", theme.nodeLabelBackground);
       sigma.setSetting("labelShadowColor", theme.nodeLabelShadowColor);
+      graph.updateEachNodeAttributes((_, attr) => {
+        attr.color = theme.nodeColor;
+        return attr;
+      });
       $settings.filters.forEach((filter) => {
         graph.updateEachNodeAttributes((node, attr: Attributes) => {
           attr.highlighted = false;
           attr.size = (attr.size ?? attr.size) + 2;
-          if (foundNodeIds?.includes(node)) {
-            attr.color = orange;
-            attr.highlighted = true;
-            attr.size = (attr.size ?? attr.size) + 2;
-            return attr;
-          } else if (
+          if (
             filter.searchType === "color" &&
             filter.foundNodeIds?.includes(node)
           ) {
@@ -233,7 +230,20 @@
           return attr;
         });
       });
+      if (foundNodeIds) {
+      graph.updateEachNodeAttributes((node, attr: Attributes) => {
+        attr.highlighted = false;
+        attr.size = (attr.size ?? attr.size) + 2;
+        if (foundNodeIds?.includes(node)) {
+          attr.color = orange;
+          attr.highlighted = true;
+          attr.size = (attr.size ?? attr.size) + 2;
+          return attr;
+        }
+        return attr;
+      })
     }
+  }
   }
 
   $: if (sigma && ($settings.pathA || $settings.pathB || $settings.search)) {
