@@ -1,7 +1,7 @@
 <script lang="ts">
   import type Graph from "graphology";
 
-  import { afterUpdate, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { filter } from "./graph";
   import Node from "./Node.svelte";
   import Edge from "./Edge.svelte";
@@ -15,8 +15,22 @@
     Mode,
     NodeFilter,
   } from "./stores";
+  import { setThemeColors } from "./settings/themes";
 
   onMount(async () => {
+    logseq.App.onThemeModeChanged((event) => {
+      setThemeColors();
+      $settings.themeMode = event.mode;
+    });
+    logseq.App.onThemeChanged((event) => {
+      setThemeColors();
+      if (event.mode === "dark") {
+        $settings.themeMode = "dark";
+      } else {
+        $settings.themeMode = "light";
+      }
+    });
+
     // @ts-ignore
     logseq.on("ui:visible:changed", async ({ visible }) => {
       store.visible(visible);
@@ -24,6 +38,7 @@
         store.reload();
       }
     });
+    $settings.themeMode = (await logseq.App.getUserConfigs()).preferredThemeMode;
     if (logseq.settings) {
       if (logseq.settings.filters) {
         let filters: NodeFilter[] = logseq.settings.filters;
@@ -96,8 +111,7 @@
       if (page) {
         logseq.Editor.openInRightSidebar(page.uuid);
       }
-    } else
-    if ($settings.mode === Mode.Navigate || metaDown) {
+    } else if ($settings.mode === Mode.Navigate || metaDown) {
       const page = await logseq.Editor.getPage(+event.detail);
       if (page) {
         metaDown = false;
@@ -147,7 +161,6 @@
     }
     graphWas = graph;
     return graph;
-
   }
 
   function filteredGraph(
@@ -216,7 +229,6 @@
     bottom: 0;
     left: 0;
     font-family: Arial, Helvetica, sans-serif;
-    background: white;
     width: 100%;
     height: 100%;
   }

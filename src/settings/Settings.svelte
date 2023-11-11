@@ -199,7 +199,7 @@
   section {
     margin-bottom: 0.5rem;
   }
-  .settings {
+  :global(.settings) {
     position: fixed;
     top: 40px;
     right: 1vh;
@@ -208,18 +208,19 @@
     border: 1px solid #a3a3a3;
     padding: 0.5rem;
     margin: 0;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: var(--theme-secondary-background);
+    color: var(--theme-color);
   }
-  input[type=search] {
+  :global(input[type=search]) {
     tab-size: 4;
     word-break: break-word;
-    border: 0 solid #e5e5e5;
+    border: 0 solid var(--theme-border-color);
     box-sizing: border-box;
     color: inherit;
     margin: 0;
     font: inherit;
     appearance: none;
-    background-color: #fff;
+    background-color: var(--theme-background-color);
     padding: .5rem .75rem;
     border-radius: .25rem;
     padding-left: .5rem;
@@ -246,7 +247,9 @@
     height: 1.5rem;
     font-size: 0.8rem;
     border-radius: 0.25rem;
-    border: 1px solid #e5e5e5;
+    border: 1px solid var(--theme-border-color);
+    background-color: var(--theme-background-color);
+    color: var(--theme-color);
 
   }
   select:focus {

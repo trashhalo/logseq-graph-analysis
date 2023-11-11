@@ -35,6 +35,7 @@ interface Settings {
   scalingRatio: number;
   edgeWeightInfluence: number;
   filters: NodeFilter[];
+  themeMode: "dark" | "light";
 }
 
 interface Store {
@@ -96,4 +97,5 @@ export const settings: Writable<Settings> = writable({
   scalingRatio: 1,
   edgeWeightInfluence: 0.5,
   filters: logseq.settings?.filters || [],
+  themeMode: "dark",
 });

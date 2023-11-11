@@ -4,6 +4,7 @@ import "@unocss/reset/normalize.css";
 import App from "./App.svelte";
 import type * as CSS from "csstype";
 import type { SettingSchemaDesc } from "@logseq/libs/dist/LSPlugin.user";
+import {setThemeColors} from "./settings/themes";
 
 
 const settingsSchema: SettingSchemaDesc[] = [
@@ -35,14 +36,19 @@ function createModel() {
 
 async function main() {
   const app = new App({
-    target: document.getElementById("app"),
+    target: document.getElementById("app") as Element,
   });
+
+
+  setThemeColors();
 
   const baseStyles: CSS.Properties = {
     position: "fixed",
     zIndex: 12,
     height: "calc(100vh - 8px)",
     top: "8px",
+    background: "var(--ls-primary-background-color)",
+    color: "var(--ls-primary-text-color)",
   };
 
   logseq.setMainUIInlineStyle(baseStyles);
