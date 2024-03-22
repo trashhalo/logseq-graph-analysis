@@ -18,6 +18,20 @@
   import { setThemeColors } from "./settings/themes";
 
   onMount(async () => {
+    // do this first to avoid overwriting of filters
+    if (logseq.settings) {
+      if (logseq.settings.filters) {
+        let filters: NodeFilter[] = logseq.settings.filters;
+        // reset ids to be sequential
+        filters.forEach((el, index) => {
+          el.id = index;
+          return el;
+        });
+        $settings.filters = filters;
+      } else {
+        $settings.filters = [];
+      }
+    }
     logseq.App.onThemeModeChanged((event) => {
       setThemeColors();
       $settings.themeMode = event.mode;
@@ -38,21 +52,9 @@
         store.reload();
       }
     });
-    $settings.themeMode = (await logseq.App.getUserConfigs()).preferredThemeMode;
-    if (logseq.settings) {
-      if (logseq.settings.filters) {
-        let filters: NodeFilter[] = logseq.settings.filters;
-        // reset ids to be sequential
-        filters.forEach((el, index) => {
-          el.id = index;
-          return el;
-        });
-
-        $settings.filters = filters;
-      } else {
-        $settings.filters = [];
-      }
-    }
+    $settings.themeMode = (
+      await logseq.App.getUserConfigs()
+    ).preferredThemeMode;
 
     logseq.DB.onChanged(() => {
       if ($uiVisible) {
@@ -167,7 +169,7 @@
     graph: Graph,
     filterEnabled: boolean,
     search: string | undefined,
-    filterLength: number
+    filterLength: number,
   ): Graph {
     graph.forEachNode((node) => {
       graph.setNodeAttribute(node, "hidden", false);
@@ -202,7 +204,7 @@
       $graph,
       $settings.filter,
       $settings.search,
-      $settings.filterLength
+      $settings.filterLength,
     )}
     {#each graph.nodes() as node (node)}
       <Node id={node} attributes={graph.getNodeAttributes(node)} />
