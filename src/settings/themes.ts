@@ -27,7 +27,7 @@ const darkTheme: Theme = {
 };
 
 export const setThemeColors = () => {
-  const root = parent.document.querySelector(":root");
+  const root = parent.document.querySelector("#root");
   if (root) {
     const rootStyles = getComputedStyle(root);
     document.body.style.setProperty("--theme-background", rootStyles.getPropertyValue("--ls-primary-background-color") || "#ffffff");
