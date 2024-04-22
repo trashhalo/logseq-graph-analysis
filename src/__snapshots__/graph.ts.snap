@@ -396,6 +396,30 @@ exports[`buildGraph > shows journal pages when requested 1`] = `
 }
 `;
 
+exports[`buildGraph > skips pages with exclude-from-graph-view: true 1`] = `
+{
+  "attributes": {
+    "isInited": true,
+  },
+  "edges": [],
+  "nodes": [
+    {
+      "attributes": {
+        "aliases": [],
+        "label": "A",
+        "rawAliases": [],
+        "type": "circle",
+      },
+    },
+  ],
+  "options": {
+    "allowSelfLoops": true,
+    "multi": false,
+    "type": "mixed",
+  },
+}
+`;
+
 exports[`buildGraph > skips pages with graph-hide: true 1`] = `
 {
   "attributes": {
