@@ -34,7 +34,7 @@ export async function buildGraph(
   const journals = pages.filter((p) => p["journal?"]);
 
   for (const page of pages) {
-    if (page.properties && page.properties.graphHide) {
+    if (page.properties && (page.properties.graphHide || page.properties.excludeFromGraphView)) {
       continue;
     }
     if (g.hasNode(page.id)) {
