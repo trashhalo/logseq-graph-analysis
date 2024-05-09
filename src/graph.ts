@@ -34,7 +34,7 @@ export async function buildGraph(
   const journals = pages.filter((p) => p["journal?"]);
 
   for (const page of pages) {
-    if (page.properties && page.properties.graphHide) {
+    if (page.properties && (page.properties.graphHide || page.properties.excludeFromGraphView)) {
       continue;
     }
     if (g.hasNode(page.id)) {
@@ -423,6 +423,36 @@ if (import.meta.vitest) {
           "journal?": false,
           name: "B",
           properties: { graphHide: true },
+        },
+      ];
+      const getBlockReferences = async () => [
+        [
+          {
+            refs: [{ id: 2 }],
+            "path-refs": [{ id: 1 }, { id: 2 }],
+            page: { id: 1 },
+          },
+        ],
+      ];
+      const getSettings = () => ({ journal: false });
+      const getBlock = async (ref: BlockIdentity | EntityID) => null;
+      const graph = await buildGraph(
+        getAllPages,
+        getBlockReferences,
+        getSettings,
+        getBlock
+      );
+      expect(graphToJson(graph)).toMatchSnapshot();
+    });
+
+    it("skips pages with exclude-from-graph-view: true", async () => {
+      const getAllPages = async () => [
+        { id: 1, "journal?": false, name: "A" },
+        {
+          id: 2,
+          "journal?": false,
+          name: "B",
+          properties: { excludeFromGraphView: true },
         },
       ];
       const getBlockReferences = async () => [

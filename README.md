@@ -19,7 +19,9 @@ Learn more about the relationships between between your notes using network anal
   - Adamic Adar - Find secret connections between your notes. Click a note to learn which notes the algorithm thinks are linked
   - CoCitation - Checks how alike documents are by looking at how close their shared references are
 - Shift-click node to add it to sidebar
-- If there are nodes you wish to hide from your graph add the page property `graph-hide:: true`
+- If there are nodes you wish to hide from your graph add the page property `graph-hide:: true` or `exclude-from-graph-view:: true`
+  - `graph-hide:: true` hides nodes from this plugin's `graph analysis` mode
+  - `exclude-from-graph-view:: true` hides nodes from both this plugin and Logseq's native global graph view, see [the Logseq documentation](https://docs.logseq.com/#/page/built-in%20properties)
   - If you are interested in seeing suprising paths in your notes its a good idea to add this to notes that have lots of connections.
 
 ## Search and filters
